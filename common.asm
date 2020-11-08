@@ -19,6 +19,11 @@ else
         unknow_machine
 endif
 
+; TODO: COMMENT, I THINK THIS GENERATES A TABLE ENTRY SUITABLE FOR USE WITH RTS HACK
+macro equh n
+        equb hi(n-1), lo(n-1)
+endmacro
+
 L00A8   = $00A8
 L00A9   = $00A9
 L00AA   = $00AA
@@ -6735,8 +6740,10 @@ endif
 .LAD4F
         EQUB    $FC
 
+        ; TODO!!!
 .LAD50
-        EQUB    $AD,$FC,$AD,$FC,$AD,$F7,$B1,$45
+        equh    LADFD
+        EQUB    $AD,$FC,$AD,$F7,$B1,$45
         EQUB    $B2,$2D,$B5,$43,$B6,$FC,$AD,$FC
         EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$16
         EQUB    $B0,$64,$B0,$C2,$B0,$07,$B1,$AB
@@ -8806,6 +8813,7 @@ endif
 
 .LB9E1
         EQUB    $27,$E8,$03,$64,$00,$0A,$00,$01
+        ; TODO!!!
         EQUB    $00,$20,$B6,$BA,$4C,$F3,$B9
 
 .LB9F0
@@ -9551,7 +9559,8 @@ endif
 .LBFC6
         RTS
 
-        EQUS    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00," Richard,Sam,Tutu,Tim,Paul & Sharron "
+        skipto  $bfdb
+        EQUS    " Richard,Sam,Tutu,Tim,Paul & Sharron "
 
 .BeebDisEndAddr
 if BBC_B
