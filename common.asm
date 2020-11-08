@@ -1357,24 +1357,27 @@ endif
         RTS
 
 .L8B71
-if BBC_B
-        EQUB    $EB
-elif BBC_B_PLUS
-        EQUB    $EC
-else
-        unknown_machine
-endif
+L8B72 = L8B71+1
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L9AEB
+        EQUW    L8DD2
+        EQUW    L9F36
+        EQUW    L8E61
+        EQUW    L9F5A
+        EQUW    L8DDA
+        EQUW    L9F54, L8E5B, L9F5F, L9CF3, L9CED
+        EQUW    L9044, L9095, L9270, L93E2, L92EA
+        EQUW    L9F8C, LB9EA, LBA6D, L8BB1, L8BB1
+        EQUW    L8BB1, LA258, L8BB1, L8BB1
 
-.L8B72
-        EQUB    $9A,$EB,$9A,$EB,$9A,$EB,$9A,$EB
-        EQUB    $9A,$EB,$9A,$EB,$9A,$EB,$9A,$D2
-        EQUB    $8D,$36,$9F,$61,$8E,$5A,$9F,$DA
-        EQUB    $8D,$54,$9F,$5B,$8E,$5F,$9F,$F3
-        EQUB    $9C,$ED,$9C,$44,$90,$95,$90,$70
-        EQUB    $92,$E2,$93,$EA,$92,$8C,$9F,$EA
-        EQUB    $B9,$6D,$BA,$B1,$8B,$B1,$8B,$B1
-        EQUB    $8B,$58,$A2,$B1,$8B,$B1,$8B,$20
-        EQUB    $80,$8C
+.L8BB1
+        JSR     L8C80
 
 .L8BB4
         LDA     L031F
@@ -1755,11 +1758,13 @@ endif
 
         RTS
 
+.L8DD2
         LDX     #$20
         JSR     L8B4C
 
         JMP     L8C6F
 
+.L8DDA
         LDX     #$20
         JSR     L8E0D
 
@@ -1852,10 +1857,12 @@ endif
 
         RTS
 
+.L8E5B
         JSR     L8E67
 
         JMP     L8C6F
 
+.L8E61
         JSR     L8EE1
 
         JMP     L8C6F
@@ -2122,6 +2129,7 @@ endif
 .L9043
         RTS
 
+.L9044
         LDX     #$24
         LDY     #$14
         JSR     LD48A
@@ -2172,6 +2180,7 @@ endif
 
         JMP     L8C6F
 
+.L9095
         LDX     #$24
         LDY     #$14
         JSR     LD48A
@@ -2418,6 +2427,7 @@ endif
 .L926F
         RTS
 
+.L9270
         LDA     #$00
         STA     L0C43
         JSR     L95ED
@@ -2494,6 +2504,7 @@ endif
 
         JMP     L8C6F
 
+.L92EA
         LDA     #$00
         STA     L0C43
         LDA     #$01
@@ -2661,6 +2672,7 @@ endif
 .L93DF
         JMP     L8C6F
 
+.L93E2
         LDA     #$00
         STA     L0C43
         LDA     #$01
@@ -3763,6 +3775,7 @@ endif
 .L9AEA
         RTS
 
+.L9AEB
         JSR     L9CCB
 
         LDA     L031F
@@ -4110,10 +4123,12 @@ endif
 
         RTS
 
+.L9CED
         LDA     #$01
         LDX     #$00
         BEQ     L9CF7
 
+.L9CF3
         LDA     #$00
         LDX     #$01
 .L9CF7
@@ -4489,6 +4504,7 @@ endif
 .L9F35
         RTS
 
+.L9F36
         LDA     #$00
         LDX     #$01
 .L9F3A
@@ -4507,14 +4523,17 @@ endif
 
         JMP     L8C80
 
+.L9F54
         LDA     #$01
         LDX     #$00
         BEQ     L9F3A
 
+.L9F5A
         LDA     #$01
         TAX
         BNE     L9F62
 
+.L9F5F
         LDA     #$00
         TAX
 .L9F62
@@ -4547,6 +4566,7 @@ endif
         LDA     L00DA
         RTS
 
+.L9F8C
         LDA     L031F
         JSR     L9F95
 
@@ -5043,6 +5063,7 @@ endif
         LSR     A
         RTS
 
+.LA258
         LDY     #$4C
         LDA     (L00F8),Y
         INY
@@ -8841,13 +8862,16 @@ endif
         EQUB    $10
 
 .LB9E1
-        EQUB    $27,$E8,$03,$64,$00,$0A,$00,$01
-        ; TODO!!!
-        EQUB    $00,$20,$B6,$BA,$4C,$F3,$B9
+        EQUB    $27,$E8,$03,$64,$00,$0A,$00,$01,$00
+
+.LB9EA
+        JSR     LBAB6
+        JMP     LB9F3
 
 .LB9F0
         JSR     LBB87
 
+.LB9F3
         LDX     #$34
         LDY     #$3C
         JSR     L902D
@@ -8920,6 +8944,7 @@ endif
 
         JMP     LBA82
 
+.LBA6D
         JSR     LBAB6
 
         JMP     LBA76
