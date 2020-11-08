@@ -124,6 +124,9 @@ byte $ab20
 string $ab21 $0c
 entry pc
 
+byte $ab53 $07
+entry pc
+
 byte $ab3e
 string $ab3f $13
 entry pc
@@ -132,7 +135,7 @@ byte $ac67
 string $ac68 $0f
 entry pc
 
-byte $ad50 $5f
+byte $ad4f $60
 entry pc
 
 byte $b228
@@ -166,8 +169,8 @@ byte $b915
 string $b916 $04
 entry pc
 
-byte $b935
-string $b936 $05
+byte $b936
+string $b937 $05
 entry pc
 
 byte $b94f
@@ -180,6 +183,9 @@ entry pc
 
 byte $b982
 string $b983 $06
+entry pc
+
+byte $b9e0 $10
 entry pc
 
 string $bfc7 $39
