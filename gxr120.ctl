@@ -130,4 +130,18 @@ byte $b33e
 string $b33f $09
 entry pc
 
+byte $b35a
+string $b35b $07
+entry pc
+
+stringz $b89a
+
+byte $b8f1
+string $b8f2 $06
+entry pc
+
+byte $b901
+string $b902 $09
+entry pc
+
 hexdump output.hex ; TODO: Get rid of this?
