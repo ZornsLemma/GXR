@@ -3,9 +3,11 @@
 if BBC_B
         TODO1 = $C41C
         TODO2 = $C423
+        TODO3 = $D10F
 elif BBC_B_PLUS
         TODO1 = $C413
         TODO2 = $C41A
+        TODO3 = $CA79
 else
         unknow_machine
 endif
@@ -1299,7 +1301,7 @@ L8A89 = L8A87+2
         RTS
 
 .L8B55
-        JSR     LD10F
+        JSR     TODO3
 
         BNE     L8B54
 
@@ -3751,7 +3753,7 @@ endif
         STA     L0C11
 .L9B14
         LDX     #$24
-        JSR     LD10F
+        JSR     TODO3
 
         STA     L00DC
         BEQ     L9B23
@@ -3761,7 +3763,7 @@ endif
         STA     L00DB
 .L9B23
         LDX     #$20
-        JSR     LD10F
+        JSR     TODO3
 
         STA     L0C14
         BEQ     L9B39
@@ -3792,7 +3794,7 @@ endif
         JSR     L99DF
 
         LDX     #$28
-        JSR     LD10F
+        JSR     TODO3
 
         BIT     L0C14
         BNE     L9B37
@@ -3809,7 +3811,7 @@ endif
         JSR     L9981
 
         LDX     #$28
-        JSR     LD10F
+        JSR     TODO3
 
 .L9B71
         TAY
@@ -5002,7 +5004,7 @@ endif
         JSR     LA1C2
 
         LDX     #$34
-        JSR     LD10F
+        JSR     TODO3
 
         BEQ     LA30D
 
@@ -5045,7 +5047,7 @@ endif
 
 .LA30D
         LDX     #$38
-        JSR     LD10F
+        JSR     TODO3
 
         BEQ     LA348
 
@@ -5235,7 +5237,7 @@ endif
         JSR     L8E0D
 
         LDX     #$28
-        JSR     LD10F
+        JSR     TODO3
 
         BEQ     LA45E
 
@@ -5262,7 +5264,7 @@ endif
 
 .LA45E
         LDX     #$2C
-        JSR     LD10F
+        JSR     TODO3
 
         BEQ     LA483
 
