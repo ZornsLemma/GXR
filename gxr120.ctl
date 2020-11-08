@@ -59,4 +59,15 @@ stringz $846d
 stringz pc
 stringz pc
 
+byte $89a0
+string $89a1 $1f
+entry pc
+
+byte $89dd
+string $89de $0b
+entry pc
+
+byte $8a8a $96
+byte $8b72 $42
+
 hexdump output.hex
