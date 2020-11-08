@@ -7,8 +7,8 @@ header_title = $8009
 
 ; JSR generate_error:EQUS error_code, "Error string", 0
 generate_error = $8a74
-; JSR print_inline:EQUS length,"string"
-print_inline = $b587
+; JSR print_inline_counted:EQUS length,"string"
+print_inline_counted = $b587
 
 osnewl = $ffe7
 oswrch = $ffee

@@ -102,4 +102,32 @@ byte $a841
 string $a842 $06
 entry pc
 
+byte $a996
+string $a997 $09
+entry pc
+
+byte $ab20
+string $ab21 $0c
+entry pc
+
+byte $ab3e
+string $ab3f $13
+entry pc
+
+byte $ac67
+string $ac68 $0f
+entry pc
+
+byte $b228
+string $b229 $06
+entry pc
+
+byte $b2c1
+string $b2c2 $06
+entry pc
+
+byte $b33e
+string $b33f $09
+entry pc
+
 hexdump output.hex ; TODO: Get rid of this?
