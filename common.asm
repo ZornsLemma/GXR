@@ -44,7 +44,7 @@ endif
 
 ; TODO: COMMENT, I THINK THIS GENERATES A TABLE ENTRY SUITABLE FOR USE WITH RTS HACK
 macro equh n
-        equb hi(n-1), lo(n-1)
+        equb lo(n-1), hi(n-1)
 endmacro
 
 L00A8   = $00A8
@@ -6834,12 +6834,11 @@ endif
         JMP     (L00DA)
 
 .LAD4F
-        EQUB    $FC
-
-        ; TODO!!!
-.LAD50
+LAD50 = LAD4F + 1
         equh    LADFD
-        EQUB    $AD,$FC,$AD,$F7,$B1,$45
+        equh    LADFD
+        equh    LADFD
+        EQUB    $F7,$B1,$45
         EQUB    $B2,$2D,$B5,$43,$B6,$FC,$AD,$FC
         EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$16
         EQUB    $B0,$64,$B0,$C2,$B0,$07,$B1,$AB
