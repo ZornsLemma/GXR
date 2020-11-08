@@ -230,7 +230,13 @@ LFFFF   = $FFFF
         EQUB    $01
 
 .L8009
+if BBC_B
         EQUS    "Graphics Extension ROM 1.20",$0A,$0D,$00
+elif BBC_B_PLUS
+        EQUS    "Graphics Extension ROM 2.00",$0A,$0D,$00
+else
+        unknown_machine
+endif
 
         EQUS    "(C)1985 Acornsoft",$00
 
@@ -262,7 +268,13 @@ LFFFF   = $FFFF
         LDA     #$00
         STA     L0DF0,X
         TXA
+if BBC_B
         AND     #$01
+elif BBC_B_PLUS
+        AND     #$02
+else
+        unknown_machine
+endif
         BNE     L8087
 
 .L805D
@@ -397,7 +409,13 @@ LFFFF   = $FFFF
         STA     L0226
         LDA     #$FF
         STA     L0227
+if BBC_B
         LDA     #$B4
+elif BBC_B_PLUS
+        LDA     #$B5
+else
+        unknown_machine
+endif
         STA     L0DD8
         LDA     #$8C
         STA     L0DD9
@@ -9393,5 +9411,10 @@ L8A89 = L8A87+2
         EQUS    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00," Richard,Sam,Tutu,Tim,Paul & Sharron "
 
 .BeebDisEndAddr
-SAVE "gxr120.bin",BeebDisStartAddr,BeebDisEndAddr
-
+if BBC_B
+        SAVE "gxr120.bin",BeebDisStartAddr,BeebDisEndAddr
+elif BBC_B_PLUS
+        SAVE "gxr200.bin",BeebDisStartAddr,BeebDisEndAddr
+else
+        unknown_machine
+endif
