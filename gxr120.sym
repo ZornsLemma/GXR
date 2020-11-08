@@ -1,0 +1,9 @@
+header_language_entry = $8000
+header_service_entry = $8003
+header_rom_type = $8006
+header_copyright_offset = $8007
+header_binary_version = $8008
+header_title = $8009
+
+; JSR generate_error:EQUS error_code, "Error string"
+generate_error = $8a74
