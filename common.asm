@@ -1,3 +1,5 @@
+; Hex labels are based on GXR 1.20 absolute addresses.
+
 L00A8   = $00A8
 L00A9   = $00A9
 L00AA   = $00AA
@@ -1006,10 +1008,22 @@ endif
 .L8955
         PHA
         LDA     L035D
+if BBC_B
         CMP     #$8C
+elif BBC_B_PLUS
+        CMP     #$39
+else
+        unknown_machine
+endif
         BEQ     L8965
 
+if BBC_B
         CMP     #$EB
+elif BBC_B_PLUS
+        CMP     #$EE
+else
+        unknown_machine
+endif
         BEQ     L8978
 
 .L8961
@@ -1029,7 +1043,13 @@ endif
 
 .L8978
         LDA     L035E
+if BBC_B
         CMP     #$C8
+elif BBC_B_PLUS
+        CMP     #$CA
+else
+        unknown_machine
+endif
         BNE     L8961
 
         PLA
@@ -1059,7 +1079,15 @@ endif
 
         EQUB    $1F
 
-        EQUS    "GXR 1.20 is not compatible with"
+        EQUS    "GXR "
+if BBC_B
+        EQUS    "1.20"
+elif BBC_B_PLUS
+        EQUS    "2.00"
+else
+        unknown_machine
+endif
+        EQUS    " is not compatible with"
 
 .L89C0
         LDA     #$00
@@ -1072,7 +1100,13 @@ endif
         LDY     #$FF
         JSR     osbyte
 
+if BBC_B
         INX
+elif BBC_B_PLUS
+        CPX     #$FB
+else
+        unknown_machine
+endif
         BNE     L899D
 
         LDX     L00F4
