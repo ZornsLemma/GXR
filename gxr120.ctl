@@ -41,5 +41,22 @@ entry pc
 
 byte $83c9
 string $83ca $02
+entry pc
+
+byte $8400
+string $8401 $19
+entry pc
+
+byte $842a
+string $842b $13
+entry pc
+
+byte $8448
+string $8449 $14
+entry pc
+
+stringz $846d
+stringz pc
+stringz pc
 
 hexdump output.hex
