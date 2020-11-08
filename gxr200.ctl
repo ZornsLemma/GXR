@@ -66,9 +66,9 @@ byte $89de
 string $89df $0b
 entry pc
 
-byte $8a8a $96
+byte $8a8b $96
 entry pc
-byte $8b71 $43
+byte $8b72 $43
 entry pc
 
 byte $a41d
@@ -83,7 +83,7 @@ stringz $a58b
 entry pc
 stringz $a5a5
 entry pc
-stringz $a692
+stringz $a693
 entry pc
 stringz $a731
 entry pc
@@ -114,8 +114,8 @@ byte $a9aa
 string $a9ab $09
 entry pc
 
-;byte $aa26 $22
-;entry pc
+byte $aa3a $22
+entry pc
 
 byte $ab34
 string $ab35 $0c
@@ -135,56 +135,56 @@ entry pc
 byte $ad63 $60
 entry pc
 
-byte $b228
-string $b229 $06
+byte $b23c
+string $b23d $06
 entry pc
 
-byte $b2c1
-string $b2c2 $06
+byte $b2d5
+string $b2d6 $06
 entry pc
 
-byte $b33e
-string $b33f $09
+byte $b352
+string $b353 $09
 entry pc
 
-byte $b35a
-string $b35b $07
+byte $b36e
+string $b36f $07
 entry pc
 
-stringz $b89a
+stringz $b8ae
 entry pc
 
-byte $b8f1
-string $b8f2 $06
-entry pc
-
-byte $b901
-string $b902 $09
+byte $b905
+string $b906 $06
 entry pc
 
 byte $b915
-string $b916 $04
+string $b916 $09
 entry pc
 
-byte $b936
-string $b937 $05
+byte $b929
+string $b92a $04
 entry pc
 
-byte $b94f
-string $b950 $02
+byte $b94a
+string $b94b $05
 entry pc
 
-byte $b95e
-string $b95f $07
+byte $b963
+string $b964 $02
 entry pc
 
-byte $b982
-string $b983 $06
+byte $b972
+string $b973 $07
 entry pc
 
-byte $b9e0 $10
+byte $b996
+string $b997 $06
 entry pc
 
-string $bfc7 $39
+byte $b9f4 $10
+entry pc
+
+string $bfdb $25
 
 hexdump output.hex ; TODO: Get rid of this?
