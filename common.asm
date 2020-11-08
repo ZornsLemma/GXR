@@ -15,6 +15,8 @@ elif BBC_B_PLUS
         B_PLUS_LD0D0 = $D0D0
         B_PLUS_LD36A = $D36A
         B_PLUS_LD427 = $D427
+        B_PLUS_LD62E = $D62E
+        B_PLUS_LD7ED = $D7ED
 else
         unknow_machine
 endif
@@ -126,6 +128,9 @@ L0353   = $0353
 L0354   = $0354
 L0355   = $0355
 L0359   = $0359
+if BBC_B_PLUS
+L035A   = $035A
+endif
 L035B   = $035B
 L035D   = $035D
 L035E   = $035E
@@ -1300,14 +1305,26 @@ L8A89 = L8A87+2
         JSR     L8B5D
 
         LDY     L00DE
+if BBC_B
         JMP     LD6A6
+elif BBC_B_PLUS
+        JMP     B_PLUS_LD62E
+else
+        unknown_machine
+endif
 
 .L8B4C
         JSR     L8B55
 
         BNE     L8B54
 
+if BBC_B
         JMP     LD0F3
+elif BBC_B_PLUS
+        JMP     B_PLUS_LD0BF
+else
+        unknown_machine
+endif
 
 .L8B54
         RTS
@@ -1318,7 +1335,13 @@ L8A89 = L8A87+2
         BNE     L8B54
 
 .L8B5A
+if BBC_B
         JSR     LD864
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD7ED
+else
+        unknown_machine
+endif
 
 .L8B5D
         LDA     L0C00,Y
@@ -4860,7 +4883,13 @@ endif
 
 .LA17C
         LDA     L0C17,X
+if BBC_B
         STA     (L00D6),Y
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD0CD
+else
+        unknown_machine
+endif
 .LA181
         SEC
 if BBC_B
