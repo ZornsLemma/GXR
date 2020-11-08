@@ -5,15 +5,30 @@ if BBC_B
         TODO2 = $C423
         TODO3 = $D10F
         TODO4 = $C406
+        TODO5 = $D48A
+        TODO6 = $CDDE
+        TODO7 = $D3D3
+        TODO8 = $D3ED
+        TODO9 = $D3FD
+        TODO10 = $D128
 elif BBC_B_PLUS
         TODO1 = $C413
         TODO2 = $C41A
         TODO3 = $CA79
         TODO4 = $C3FD
+        TODO5 = $D403
+        TODO6 = $CDA6
+        TODO7 = $D34B
+        TODO8 = $D365
+        TODO9 = $D375
+        TODO10 = $D0D9
+        B_PLUS_LCDA6 = $CDA6
         B_PLUS_LD0BF = $D0BF
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
+        B_PLUS_LD0FE = $D0FE
         B_PLUS_LD36A = $D36A
+        B_PLUS_LD3FB = $D3FB
         B_PLUS_LD427 = $D427
         B_PLUS_LD62E = $D62E
         B_PLUS_LD7ED = $D7ED
@@ -1425,7 +1440,13 @@ L8B72 = L8B71+1
         LDA     #$80
         STA     (L00F8),Y
         LDX     #$20
+if BBC_B
         JSR     LD14D
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD0FE
+else
+        unknown_machine
+endif
 
         LDY     #$05
         LDA     L031F
@@ -1775,7 +1796,13 @@ L8B72 = L8B71+1
 .L8DE5
         LDX     #$2A
         LDY     #$2E
-        JSR     LCDDE
+if BBC_B
+        JSR     TODO6
+elif BBC_B_PLUS
+        JSR     B_PLUS_LCDA6
+else
+        unknown_machine
+endif
 
 .L8DEC
         LDX     #$28
@@ -1819,13 +1846,25 @@ L8B72 = L8B71+1
         PLA
 .L8E2A
         PHA
+if BBC_B
         JSR     LD482
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD3FB
+else
+        unknown_machine
+endif
 
         PLA
         TAX
         INX
         INX
+if BBC_B
         JMP     LD482
+elif BBC_B_PLUS
+        JMP     B_PLUS_LD3FB
+else
+        unknown_machine
+endif
 
 .L8E35
         LDA     L035B,X
@@ -2132,7 +2171,7 @@ L8B72 = L8B71+1
 .L9044
         LDX     #$24
         LDY     #$14
-        JSR     LD48A
+        JSR     TODO5
 
         LDY     #$14
         LDX     #$20
@@ -2183,7 +2222,7 @@ L8B72 = L8B71+1
 .L9095
         LDX     #$24
         LDY     #$14
-        JSR     LD48A
+        JSR     TODO5
 
         LDY     #$14
         LDX     #$20
@@ -3600,13 +3639,13 @@ L8B72 = L8B71+1
         DEX
         DEX
         TAY
-        JSR     LCDDE
+        JSR     TODO6
 
         INX
         INX
         INY
         INY
-        JSR     LCDDE
+        JSR     TODO6
 
         STA     L0C16
         PLA
@@ -3987,7 +4026,7 @@ endif
         DEY
         BPL     L9C3E
 
-        JSR     LD3D3
+        JSR     TODO7
 
         JMP     L9C3E
 
@@ -4029,7 +4068,7 @@ endif
         LSR     L00D1
         BCC     L9C78
 
-        JSR     LD3ED
+        JSR     TODO8
 
         JMP     L9C78
 
@@ -4037,7 +4076,7 @@ endif
         ASL     L00D1
         BCC     L9C78
 
-        JSR     LD3FD
+        JSR     TODO9
 
 .L9C78
         SEC
@@ -4316,7 +4355,7 @@ endif
         LDA     #$00
         STA     L032F
         SEC
-        JSR     LD3FD
+        JSR     TODO9
 
         JMP     L9DF9
 
@@ -4366,7 +4405,7 @@ endif
         LDA     #$00
         STA     L032F
         SEC
-        JSR     LD3ED
+        JSR     TODO8
 
         JMP     L9E4B
 
@@ -4432,7 +4471,7 @@ endif
         LSR     L00D1
         BCC     L9EB6
 
-        JSR     LD3ED
+        JSR     TODO8
 
         JMP     L9EB6
 
@@ -4559,7 +4598,7 @@ endif
         STA     L00DA
         DEX
         DEX
-        JSR     LD128
+        JSR     TODO10
 
         INX
         INX
@@ -4575,13 +4614,13 @@ endif
 .L9F95
         AND     #$02
         STA     L0345
-        LDA     LC41C
+        LDA     TODO1
         STA     L00A8
-        LDA     LC41D
+        LDA     TODO1+1
         STA     L00A9
-        LDA     LC41B
+        LDA     TODO1-1
         STA     L00AA
-        LDA     LC420
+        LDA     TODO1+4
         STA     L00AB
         LDX     #$01
         JSR     L8E35
@@ -4598,7 +4637,7 @@ endif
 
         LDY     #$34
         LDX     #$20
-        JSR     LD48A
+        JSR     TODO5
 
         STY     L00DA
         LDX     #$34
@@ -4750,11 +4789,11 @@ endif
 .LA0BC
         LDX     #$2A
         LDY     #$2E
-        JSR     LCDDE
+        JSR     TODO6
 
         LDX     #$36
         LDY     #$3A
-        JSR     LCDDE
+        JSR     TODO6
 
 .LA0CA
         JSR     LA0D9
@@ -5116,7 +5155,7 @@ endif
         STA     L0330
         LDX     #$20
         LDY     #$34
-        JSR     LD48A
+        JSR     TODO5
 
         STY     L00DA
         LDA     L0361
@@ -5298,7 +5337,7 @@ endif
         INC     L00F9
 .LA3DA
         SEC
-        JSR     LD3FD
+        JSR     TODO9
 
         DEX
         BNE     LA3BB
@@ -5557,7 +5596,7 @@ endif
         INC     L00DB
 .LA54B
         SEC
-        JSR     LD3FD
+        JSR     TODO9
 
         DEX
         BNE     LA53C
@@ -9147,11 +9186,11 @@ endif
 .LBBBA
         LDX     #$38
         LDY     #$34
-        JSR     LD48A
+        JSR     TODO5
 
         LDX     #$3C
         LDY     #$38
-        JSR     LD48A
+        JSR     TODO5
 
         SEC
         LDA     L0330
