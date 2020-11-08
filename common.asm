@@ -6838,7 +6838,8 @@ LAD50 = LAD4F + 1
         equh    LADFD
         equh    LADFD
         equh    LADFD
-        EQUB    $F7,$B1,$45
+        equh    LB1F8
+        EQUB    $45
         EQUB    $B2,$2D,$B5,$43,$B6,$FC,$AD,$FC
         EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$16
         EQUB    $B0,$64,$B0,$C2,$B0,$07,$B1,$AB
@@ -7535,6 +7536,7 @@ LAD50 = LAD4F + 1
 
 .LB1F7
         SEC
+.LB1F8
         LDY     #$01
         LDA     (L00AC),Y
         BEQ     LB244
