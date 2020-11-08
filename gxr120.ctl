@@ -80,5 +80,26 @@ entry pc
 
 stringz $a577
 stringz $a591
+stringz $a67f
+stringz $a71d
+stringz $a75a
+stringz $a7dc
+stringz $a7ee
+
+byte $a819
+string $a81a $08
+entry pc
+
+byte $a828
+string $a829 $04
+entry pc
+
+byte $a836
+string $a837 $04
+entry pc
+
+byte $a841
+string $a842 $06
+entry pc
 
 hexdump output.hex ; TODO: Get rid of this?
