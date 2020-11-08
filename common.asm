@@ -2,8 +2,10 @@
 
 if BBC_B
         TODO1 = $C41C
+        TODO2 = $C423
 elif BBC_B_PLUS
         TODO1 = $C413
+        TODO2 = $C41A
 else
         unknow_machine
 endif
@@ -1622,7 +1624,7 @@ endif
         AND     #$07
         ADC     L00DA
         TAY
-        LDA     LC423,Y
+        LDA     TODO2,Y
         STA     L031C,X
         DEX
         BPL     L8D3B
