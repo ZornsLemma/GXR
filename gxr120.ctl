@@ -23,4 +23,23 @@ repeat 18
 endrepeat
 wordentry pc 14
 
+byte $8368
+string $8369 $17
+entry pc
+
+byte $8393
+string $8394 $09
+entry pc
+
+byte $83a3
+string $83a4 $10
+entry pc
+
+byte $83bf
+string $83c0 $03
+entry pc
+
+byte $83c9
+string $83ca $02
+
 hexdump output.hex
