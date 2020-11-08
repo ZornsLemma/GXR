@@ -78,4 +78,7 @@ byte $a420
 string $a421 $06
 entry pc
 
+stringz $a577
+stringz $a591
+
 hexdump output.hex ; TODO: Get rid of this?
