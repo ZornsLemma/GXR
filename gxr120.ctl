@@ -144,4 +144,26 @@ byte $b901
 string $b902 $09
 entry pc
 
+byte $b915
+string $b916 $04
+entry pc
+
+byte $b935
+string $b936 $05
+entry pc
+
+byte $b94f
+string $b950 $02
+entry pc
+
+byte $b95e
+string $b95f $07
+entry pc
+
+byte $b982
+string $b983 $06
+entry pc
+
+string $bfc7 $39
+
 hexdump output.hex ; TODO: Get rid of this?
