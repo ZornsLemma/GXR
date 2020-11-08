@@ -12,3 +12,11 @@ byte pc ; copyright offset
 byte pc ; binary version
 stringz pc ; title
 stringz pc ; copyright
+
+stringz $81e0
+newpc $81f5
+repeat 18
+    stringz pc
+endrepeat
+wordentry pc 14
+entry pc
