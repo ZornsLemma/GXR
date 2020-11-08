@@ -4,10 +4,17 @@ if BBC_B
         TODO1 = $C41C
         TODO2 = $C423
         TODO3 = $D10F
+        TODO4 = $C406
 elif BBC_B_PLUS
         TODO1 = $C413
         TODO2 = $C41A
         TODO3 = $CA79
+        TODO4 = $C3FD
+        B_PLUS_LD0BF = $D0BF
+        B_PLUS_LD0CD = $D0CD
+        B_PLUS_LD0D0 = $D0D0
+        B_PLUS_LD36A = $D36A
+        B_PLUS_LD427 = $D427
 else
         unknow_machine
 endif
@@ -3912,6 +3919,7 @@ endif
         BEQ     L9C1E
 
 .L9C0E
+if BBC_B
         LDA     L00D1
         AND     L00D4
         ORA     (L00D6),Y
@@ -3920,6 +3928,11 @@ endif
         AND     L00D5
         EOR     L00DA
         STA     (L00D6),Y
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD0BF
+else
+        unknown_machine
+endif
 .L9C1E
         LDA     L0331
         BPL     L9C59
@@ -4322,6 +4335,7 @@ endif
 .L9E8B
         DEC     L0324
 .L9E8E
+if BBC_B
         LDA     L032F
         AND     L00D4
         ORA     (L00D6),Y
@@ -4330,6 +4344,15 @@ endif
         AND     L032F
         EOR     L00DA
         STA     (L00D6),Y
+elif BBC_B_PLUS
+        LDX     L00D1
+        LDA     L032F
+        STA     L00D1
+        JSR     B_PLUS_LD0BF
+        STX     L00D1
+else
+        unknown_machine
+endif
 .L9EA0
         RTS
 
@@ -4420,7 +4443,14 @@ endif
 
 .L9F24
         LDY     L031A
+if BBC_B
         LDA     (L00D6),Y
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD427
+        EOR     L035A
+else
+        unknown_machine
+endif
         EOR     L0C17,Y
         AND     L00D1
         BEQ     L9F32
@@ -4748,7 +4778,14 @@ endif
         LDA     L0344
         STA     L00DD
 .LA128
+if BBC_B
         LDA     (L00D6),Y
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD427
+        EOR     L035A
+else
+        unknown_machine
+endif
         LDX     L0342
         BEQ     LA133
 
@@ -4760,9 +4797,21 @@ endif
 .LA133
         STA     L00DA
         SEC
-        JSR     LD3F2
+if BBC_B
+        JSR     LD3F2 ; TODO: RENAME ALL B OS ADDRESSES TO B_LXXXX
 
         LDA     (L00D6),Y
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD36A
+
+        LDX     L00DA
+        JSR     B_PLUS_LD427
+
+        EOR     L035A
+        STX     L00DA
+else
+        unknown_machine
+endif
         LDX     L0343
         BEQ     LA144
 
@@ -4809,7 +4858,13 @@ endif
         STA     (L00D6),Y
 .LA181
         SEC
+if BBC_B
         JSR     LD3F2
+elif BBC_B_PLUS
+        JSR     B_PLUS_LD36A
+else
+        unknown_machine
+endif
 
         DEX
         BNE     LA17C
@@ -4820,12 +4875,27 @@ endif
         AND     L00DA
         STA     L00DA
 .LA191
+if BBC_B
         LDA     L0C17,X
         EOR     (L00D6),Y
         AND     L00DA
         EOR     (L00D6),Y
         STA     (L00D6),Y
         RTS
+elif BBC_B_PLUS
+        LDA     L00DA
+        STA     L00DB
+        JSR     B_PLUS_LD427
+
+        EOR     L035A
+        STA     L00DA
+        EOR     L0C17,X
+        AND     L00DB
+        EOR     L00DA
+        JMP     B_PLUS_LD0CD
+else
+        unknown_machine
+endif
 
 .LA19D
         INC     L032A,X
@@ -4906,7 +4976,7 @@ endif
         CLC
         ADC     L0361
         TAY
-        LDA     LC406,Y
+        LDA     TODO4,Y
         EOR     L8A89,Y
         STA     L00DC
         LDA     L0300,X
@@ -5157,9 +5227,16 @@ endif
         ORA     L00A8
         EOR     L00A9
         LDY     L031A
+if BBC_B
         ORA     (L00D6),Y
         EOR     L00D5
         STA     (L00D6),Y
+elif BBC_B_PLUS
+        STA     L00D4
+        JSR     B_PLUS_LD0D0
+else
+        unknown_machine
+endif
         INC     L00F8
         BNE     LA3DA
 
@@ -5402,7 +5479,21 @@ endif
         PHA
 .LA53C
         LDY     L031A
+if BBC_B
         LDA     (L00D6),Y
+elif BBC_B_PLUS
+        LDA     L00DA
+        PHA
+        JSR     B_PLUS_LD427
+
+        EOR     L035A
+        TAY
+        PLA
+        STA     L00DA
+        TYA
+else
+        unknown_machine
+endif
         LDY     #$00
         STA     (L00DA),Y
         INC     L00DA
