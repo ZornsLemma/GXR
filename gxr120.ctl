@@ -5,7 +5,7 @@ symbols gxr120.sym
 newsym z.sym ; TODO: get rid of this
 
 ; ROM header
-string $8000 3 ; vanity text in language entry
+string $8000 3 ; text in language entry
 entry $8003 ; service entry
 byte $8006 ; rom type
 byte pc ; copyright offset
@@ -22,6 +22,7 @@ repeat 18
     stringz pc
 endrepeat
 wordentry pc 14
+entry pc
 
 byte $8368
 string $8369 $17
@@ -58,6 +59,7 @@ entry pc
 stringz $846d
 stringz pc
 stringz pc
+entry pc
 
 byte $89a0
 string $89a1 $1f
@@ -68,7 +70,9 @@ string $89de $0b
 entry pc
 
 byte $8a8a $96
-byte $8b72 $42
+entry pc
+byte $8b71 $43
+entry pc
 
 byte $a415
 string $a416 $03
@@ -79,12 +83,19 @@ string $a421 $06
 entry pc
 
 stringz $a577
+entry pc
 stringz $a591
+entry pc
 stringz $a67f
+entry pc
 stringz $a71d
+entry pc
 stringz $a75a
+entry pc
 stringz $a7dc
+entry pc
 stringz $a7ee
+entry pc
 
 byte $a819
 string $a81a $08
@@ -106,6 +117,9 @@ byte $a996
 string $a997 $09
 entry pc
 
+byte $aa26 $22
+entry pc
+
 byte $ab20
 string $ab21 $0c
 entry pc
@@ -116,6 +130,9 @@ entry pc
 
 byte $ac67
 string $ac68 $0f
+entry pc
+
+byte $ad50 $5f
 entry pc
 
 byte $b228
@@ -135,6 +152,7 @@ string $b35b $07
 entry pc
 
 stringz $b89a
+entry pc
 
 byte $b8f1
 string $b8f2 $06
