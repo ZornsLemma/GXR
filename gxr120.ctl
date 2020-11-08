@@ -21,6 +21,6 @@ newpc $81f5
 repeat 18
     stringz pc
 endrepeat
-entry pc
+wordentry pc 14
 
 hexdump output.hex
