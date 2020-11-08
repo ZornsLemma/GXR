@@ -70,4 +70,12 @@ entry pc
 byte $8a8a $96
 byte $8b72 $42
 
-hexdump output.hex
+byte $a415
+string $a416 $03
+entry pc
+
+byte $a420
+string $a421 $06
+entry pc
+
+hexdump output.hex ; TODO: Get rid of this?
