@@ -1,5 +1,13 @@
 ; Hex labels are based on GXR 1.20 absolute addresses.
 
+if BBC_B
+        TODO1 = $C41C
+elif BBC_B_PLUS
+        TODO1 = $C413
+else
+        unknow_machine
+endif
+
 L00A8   = $00A8
 L00A9   = $00A9
 L00AA   = $00AA
@@ -1310,7 +1318,13 @@ L8A89 = L8A87+2
         RTS
 
 .L8B71
+if BBC_B
         EQUB    $EB
+elif BBC_B_PLUS
+        EQUB    $EC
+else
+        unknown_machine
+endif
 
 .L8B72
         EQUB    $9A,$EB,$9A,$EB,$9A,$EB,$9A,$EB
@@ -1392,13 +1406,13 @@ L8A89 = L8A87+2
         PHA
         AND     #$0F
         TAY
-        LDA     LC41C,Y
+        LDA     TODO1+0,Y
         STA     L00A8
-        LDA     LC41D,Y
+        LDA     TODO1+1,Y
         STA     L00A9
-        LDA     LC41B,Y
+        LDA     TODO1-1,Y
         STA     L00AA
-        LDA     LC420,Y
+        LDA     TODO1+4,Y
         STA     L00AB
         PLA
         AND     #$F0
