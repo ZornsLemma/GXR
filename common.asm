@@ -490,10 +490,10 @@ endif
         DEY
         PLA
         STA     (L00F8),Y
-        LDY     #(lda_imm_to_patch_1 - L8955) + 1
+        LDY     #(lda_imm_old_wrchv_lo_patch - L8955) + 1
         LDA     L032A
         STA     (L00F8),Y
-        LDY     #(lda_imm_to_patch_2 - L8955) + 1
+        LDY     #(lda_imm_our_rom_bank_patch - L8955) + 1
         LDA     L00F4
         STA     (L00F8),Y
         JSR     L88F9
@@ -1113,9 +1113,9 @@ endif
         CMP     #hi(vdu25EntryPoint)
         BNE     L8961
 
-        LDA     #$31
+        LDA     #$31 ; SFTODO MAGIC CONSTANT
         STA     vduJumpVector + 0
-.lda_imm_to_patch_1
+.lda_imm_old_wrchv_lo_patch
         LDA     #$FF
         STA     vduJumpVector + 1
         BNE     L8961
@@ -1137,8 +1137,8 @@ endif
         PHA
         LDA     L00F4
         PHA
-.lda_imm_to_patch_2
-        LDA     #$FF
+.lda_imm_our_rom_bank_patch
+        LDA     #$FF ; patched to LDA #our_rom_bank
 if BBC_B or BBC_B_PLUS
         STA     L00F4
         STA     LFE30
