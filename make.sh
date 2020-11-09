@@ -9,3 +9,5 @@ beebasm -v -i top-electron.asm -D BeebDisStartAddr=0x8000 > gxr100.lst && mv gxr
 cd ..
 cmp roms/gxr120.orig roms/gxr120.rom || echo "GXR 1.20 rebuild is not byte-for-byte identical"
 cmp roms/gxr200.orig roms/gxr200.rom || echo "GXR 2.00 rebuild is not byte-for-byte identical"
+beebasm -i discs/add-gxr100.asm -di discs/Graphics_Extension_ROM.orig.ssd -do discs/Graphics_Extension_ROM.ssd
+beebasm -i discs/add-gxr100.asm -di discs/Graphics_Extension_ROM_Sprites.orig.ssd -do discs/Graphics_Extension_ROM_Sprites.ssd
