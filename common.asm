@@ -90,6 +90,7 @@ elif ELECTRON
         copyFourBytesWithinVDUVariables = $D3A1 ; TODO: ELK ZP DIFFS
         fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
         setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
+        selectRom = $E3A9
 else
         unknown_machine
 endif
@@ -1162,8 +1163,8 @@ if BBC_B or BBC_B_PLUS
         STA     L00F4
         STA     LFE30
 elif ELECTRON
-        JSR     electron_sta_romsel
-        ; TODO: Can maybe get rid of these NOPs, but play it safe for now
+        JSR     selectRom
+        ; TODO: We can maybe get rid of these NOPs but play it safe for now.
         NOP
         NOP
 else
@@ -1176,8 +1177,8 @@ if BBC_B or BBC_B_PLUS
         STA     L00F4
         STA     LFE30
 elif ELECTRON
-        JSR     electron_sta_romsel
-        ; TODO: Can maybe get rid of these NOPs, but play it safe for now
+        JSR     selectRom
+        ; TODO: We can maybe get rid of these NOPs but play it safe for now.
         NOP
         NOP
 else
@@ -9750,19 +9751,6 @@ LAD50 = LAD4F + 1
 
 .LBFC6
         RTS
-
-if ELECTRON
-; This must preserve X, Y and the carry flag.
-.electron_sta_romsel
-        PHA
-        LDA     #12
-        STA     L00F4
-        STA     LFE05
-        PLA
-        STA     L00F4
-        STA     LFE05
-        RTS
-endif
 
         skipto  $bfdb
         EQUS    " Richard,Sam,Tutu,Tim,Paul & Sharron "
