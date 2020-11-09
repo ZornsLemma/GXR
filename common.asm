@@ -13,6 +13,8 @@ if BBC_B
         sixteenColourMODEMaskTable = $C407
         gcolPlotOptionsTable = $C41C
         twoColourMODEParameterTable = $C424
+        vdu25EntryPoint = $C98C
+        vdu22EntryPoint = $C8EB
         exchangeTwoVDUBytes = $CDDE
         plotPointWithinBoundsAtY = $D0F3
         checkPointXIsWithinGraphicsWindow = $D10F
@@ -31,6 +33,8 @@ elif BBC_B_PLUS
         sixteenColourMODEMaskTable = $C3FE
         gcolPlotOptionsTable = $C413
         twoColourMODEParameterTable = $C41B
+        vdu25EntryPoint = $C939
+        vdu22EntryPoint = $CAEE
         exchangeTwoVDUBytes = $CDA6
         plotPointWithinBoundsAtY = $D0BF
         checkPointXIsWithinGraphicsWindow = $CA79
@@ -1065,26 +1069,16 @@ endif
         PLA
         RTS
 
-; The code from L8955 to L899D (exclusive) is copied into RAM by L08FD.
+; The code from L8955 to L899D (exclusive) is copied into RAM by L08FD and
+; patched afterwards.
 .L8955
+        assert  lo(vdu25EntryPoint) != lo(vdu22EntryPoint)
         PHA
         LDA     vduJumpVector + 0
-if BBC_B
-        CMP     #$8C
-elif BBC_B_PLUS
-        CMP     #$39
-else
-        unknown_machine
-endif
+        CMP     #lo(vdu25EntryPoint)
         BEQ     L8965
 
-if BBC_B
-        CMP     #$EB
-elif BBC_B_PLUS
-        CMP     #$EE
-else
-        unknown_machine
-endif
+        CMP     #lo(vdu22EntryPoint)
         BEQ     L8978
 
 .L8961
@@ -1094,7 +1088,7 @@ endif
 
 .L8965
         LDA     vduJumpVector + 1
-        CMP     #$C9
+        CMP     #hi(vdu25EntryPoint)
         BNE     L8961
 
         LDA     #$31
@@ -1106,13 +1100,7 @@ endif
 
 .L8978
         LDA     vduJumpVector + 1
-if BBC_B
-        CMP     #$C8
-elif BBC_B_PLUS
-        CMP     #$CA
-else
-        unknown_machine
-endif
+        CMP     #hi(vdu22EntryPoint)
         BNE     L8961
 
         PLA
@@ -1149,6 +1137,8 @@ if BBC_B
         EQUS    "1.20"
 elif BBC_B_PLUS
         EQUS    "2.00"
+elif ELECTRON
+        EQUS    "1.00"
 else
         unknown_machine
 endif
