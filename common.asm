@@ -448,14 +448,14 @@ endif
         DEY
         BPL     L80FD
 
-        LDY     #$0E
+        LDY     #(jmp_to_patch_1 - L8955) + 1
         LDA     L020E
         PHA
         STA     (L00F8),Y
         INY
         LDA     L020F
         STA     (L00F8),Y
-        LDY     #$2D
+        LDY     #(jmp_to_patch_2 - L8955) + 2
         STA     (L00F8),Y
         DEY
         PLA
@@ -1084,6 +1084,7 @@ endif
 
 .L8961
         PLA
+.jmp_to_patch_1
         JMP     LFFFF
 
 .L8965
@@ -1109,6 +1110,7 @@ endif
         BNE     L8961
 
         PLA
+.jmp_to_patch_2 ; TODO: RENAME, IT'S A JSR (AND THUS NOT #2)
         JSR     LFFFF
 
         SEC
