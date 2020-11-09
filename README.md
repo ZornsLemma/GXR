@@ -10,8 +10,24 @@ dv8 has remastered the GXR user guide; it's available at https://stardot.org.uk/
 
 The initial disassembly was performed using Phill Harvey-Smith's [BeebDis](https://github.com/prime6809/BeebDis). The beebdis directory in the repository contains the control and symbol files I used, although they don't specify all the subroutine tables correctly and the ones in the final disassembly were manually tweaked.
 
+The excellent annotated disassembly of BBC OS 1.2 at https://tobylobster.github.io/mos/index.html and the disassembly of Electron OS 1.0 at http://mdfs.net/System/ROMs/AcornMOS/Electron/ were very helpful in determining the relevant addresses of the graphics routines in the Electron OS ROM.
+
 ## Building
 
 You'll need a copy of [BeebAsm](https://github.com/stardot/beebasm/) to build the ROMs.
 
 If you're on a Unix-like system and have beebasm on your PATH, running "./make.sh" should build all three ROMs and the sample disc images. It doesn't do anything clever so you should easily be able to execute the equivalent commands manually on other platforms.
+
+## Notes
+
+The disassembly has been commented and given human-readable labels as I picked through the code to see why it wasn't working, but it's nowhere near fully annotated. There may be absolute offsets or addresses which I haven't picked up, so if you're going to use the disassembly as the basis for your own project it would be safest to "patch" the ROM by replacing code or data byte-for-byte rather than adding or removing things.
+
+As you'd expect the BBC B (1.20) and B+ (2.00) versions are very nearly identical. The differences are:
+
+* Internal graphics routines have moved in the OS ROM and the correct addresses need to be used. The runtime check for the matching OS version has to be altered as well, of course.
+
+* GXR 1.20 automatically enables itself if (and only if) it's in an odd-numbered ROM bank. GXR 2.00 instead automatically enables itself if (and only if) it's in a ROM bank which has bit 1 set, i.e. banks 2, 3, 6, 7, 10, 11, 14 or 15. I believe this is done because each physical ROM socket in a B+ correspond to two 16K banks, so it's not possible to choose either an odd or even-numbered ROM bank by plugging a physical 16K ROM into different sockets.
+
+* In order for the GXR to work correctly in shadow screen modes on the B+, *all* screen reads and writes must be done using code executing at the special hardware-recognised addresses in the OS ROM. This means that where GXR 1.20 sometimes uses its own code to read and write the screen RAM, GXR 2.00 has to call into the OS ROM. In a few places this requires slightly more convoluted code because the OS ROM doesn't happen to contain a subroutine which does exactly what's required.
+
+As the convention seems to be that the GXR version matches the version of the OS it's meant to run on, the Electron port has been given version 1.00. A lettered suffix has been added to allow future bugfixed versions of the port to be distinguished. TODO: HAS IT?
