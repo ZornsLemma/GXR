@@ -490,7 +490,7 @@ endif
         DEY
         PLA
         STA     (L00F8),Y
-        LDY     #(lda_imm_old_wrchv_lo_patch - L8955) + 1
+        LDY     #(lda_imm_our_wrchv_handler_ram_hi_patch - L8955) + 1
         LDA     L032A
         STA     (L00F8),Y
         LDY     #(lda_imm_our_rom_bank_patch - L8955) + 1
@@ -510,6 +510,7 @@ endif
         STA     xvduv + 1
         LDA     L00F4
         STA     xvduv + 2
+
         JSR     L8D0E_get_mode_data
 
         LDA     #$00
@@ -1118,7 +1119,7 @@ endif
 
         LDA     #$31 ; SFTODO MAGIC CONSTANT
         STA     vduJumpVector + 0
-.lda_imm_old_wrchv_lo_patch
+.lda_imm_our_wrchv_handler_ram_hi_patch
         LDA     #$FF
         STA     vduJumpVector + 1
         BNE     L8961
