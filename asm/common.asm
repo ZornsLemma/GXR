@@ -319,6 +319,7 @@ osbyte  = $FFF4
 LFFFF   = $FFFF
 
         org     $8000
+        guard   $c000
 .L8000
         EQUS    "RCM"
 
