@@ -514,7 +514,7 @@ endif
         JSR     L8D0E_get_mode_data
 
         LDA     #$00
-        JSR     L8324
+        JSR     L8324_set_workspace_8c_to_97_using_a
 
         CLC
         LDA     #our_stub_wrchv_handler_rom - L8955
@@ -782,18 +782,19 @@ endif
         BEQ     L82F8
 
         LDA     L00F1
-        JSR     L8324
+        JSR     L8324_set_workspace_8c_to_97_using_a
 
         LDX     L00F0
         LDY     L00F1
         LDA     #$00
         RTS
 
-.L8324
+.L8324_set_workspace_8c_to_97_using_a
         JSR     L8943_set_f8_f9_to_private_workspace
 
         BNE     L8337
 
+{
         LDY     #$8C
         LDX     #$07
         LDA     #$AA
@@ -802,6 +803,7 @@ endif
         INY
         DEX
         BPL     L832F
+}
 
         LDA     #$08
 .L8337
@@ -1081,7 +1083,7 @@ endif
         TAY
         RTS
 
-; This must preserve the carry flag.
+; Preserves A, X, Y and carry flag. Returns with Z set to reflect value in A.
 .L8943_set_f8_f9_to_private_workspace
         PHA
         TXA
@@ -1451,7 +1453,7 @@ L8B72 = L8B71 + 1
         CLC
         JMP     (vduv)
 
-.L8BBB
+.L8BBB_our_vdu_22_entry_point
         PHA
         TXA
         PHA
@@ -1460,7 +1462,7 @@ L8B72 = L8B71 + 1
         JSR     L8D0E_get_mode_data
 
         LDA     #$00
-        JSR     L8324
+        JSR     L8324_set_workspace_8c_to_97_using_a
 
         PLA
         TAY
@@ -1474,14 +1476,14 @@ L8B72 = L8B71 + 1
 .L8BCE_our_vdu_22_25_entry_point
         JSR     L8943_set_f8_f9_to_private_workspace
 
-        BCS     L8BBB
+        BCS     L8BBB_our_vdu_22_entry_point
 
         LDX     L0361
         BEQ     L8BB4
 
         ; Copy $C99-$CFF (part of the UDG data) inclusive to the same offsets in
-        ; our workspace, preserving the original value so we can restore them
-        ; later.
+        ; our workspace so we can restore this later.
+{
         LDA     #$99
         STA     L00F8
         LDY     #$66
@@ -1490,6 +1492,7 @@ L8B72 = L8B71 + 1
         STA     (L00F8),Y
         DEY
         BPL     L8BDE
+}
 
         ; Set b7 of workspace_98 to record that we've saved UDGs.
         INY
