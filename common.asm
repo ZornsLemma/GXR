@@ -393,7 +393,7 @@ endif
         CMP     L0DF0,X
         BEQ     L80A7
 
-        ; We didn't have any workspace before, save address  and initialise parts of it.
+        ; We didn't have any workspace before, save address and initialise parts of it.
         STA     L0DF0,X
         LDA     #$00
         LDY     #$52
