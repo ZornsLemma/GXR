@@ -13,6 +13,8 @@ service_unrecognised_oscli = $04
 service_unrecognised_osbyte = $07
 service_help = $09
 
+workspace_98 = $98 ; b7 set iff we have saved UDGs from page $C in private workspace
+
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
@@ -367,11 +369,11 @@ endif
         JSR     L8943_set_f8_f9_to_private_workspace
 
         LDA     L00F9
-        BEQ     L8076
+        BEQ     L8076 ; branch if no workspace
 
-        LDY     #$98
+        LDY     #workspace_98
         LDA     (L00F8),Y
-        BPL     L8076
+        BPL     L8076 ; branch if workspace not initialised
 
         JSR     L8C80
 
@@ -1451,6 +1453,9 @@ L8B72 = L8B71 + 1
         LDX     L0361
         BEQ     L8BB4
 
+        ; Copy $C99-$CFF (part of the UDG data) inclusive to the same offsets in
+        ; our workspace, preserving the original value so we can restore them
+        ; later.
         LDA     #$99
         STA     L00F8
         LDY     #$66
@@ -1460,18 +1465,20 @@ L8B72 = L8B71 + 1
         DEY
         BPL     L8BDE
 
+        ; Set b7 of workspace_98 to record that we've saved UDGs.
         INY
         STY     L00F8
-        LDY     #$98
+        LDY     #workspace_98
         LDA     #$80
         STA     (L00F8),Y
+
         LDX     #$20
         JSR     plotConvertExternalRelativeCoordinatesToPixels
 
         LDY     #$05
         LDA     L031F
         AND     #$C3
-        BEQ     L8C6F
+        BEQ     L8C6F_restore_saved_cursors_and_udgs
 
         AND     #$03
         BEQ     L8C0D
@@ -1539,8 +1546,9 @@ L8B72 = L8B71 + 1
 
         JMP     (L00DA)
 
-.L8C6F
+.L8C6F_restore_saved_cursors_and_udgs
         LDX     #$03
+{
 .L8C71
         LDA     L0324,X
         STA     L0314,X
@@ -1548,23 +1556,29 @@ L8B72 = L8B71 + 1
         STA     L0324,X
         DEX
         BPL     L8C71
+}
 
 .L8C80
         JSR     L8943_set_f8_f9_to_private_workspace
 
+        ; Copy workspace offset $99-$FF inclusive to page $C, restoring the
+        ; original values from when we initialised ourselves.
         LDA     #$99
         STA     L00F8
         LDY     #$66
+{
 .L8C89
         LDA     (L00F8),Y
         STA     L0C00,Y
         DEY
         BPL     L8C89
+}
 
+        ; Zero workspace_98; this clears b7 to indicate we have no saved UDGs.
         INY
         STY     L00F8
         TYA
-        LDY     #$98
+        LDY     #workspace_98
         STA     (L00F8),Y
         RTS
 
@@ -1804,7 +1818,7 @@ L8B72 = L8B71 + 1
         LDX     #$20
         JSR     L8B4C
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L8DDA
         LDX     #$20
@@ -1812,7 +1826,7 @@ L8B72 = L8B71 + 1
 
         JSR     L8DE5
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L8DE5
         LDX     #$2A
@@ -1902,12 +1916,12 @@ L8B72 = L8B71 + 1
 .L8E5B
         JSR     L8E67
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L8E61
         JSR     L8EE1
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L8E67
         LDX     #$01
@@ -2220,7 +2234,7 @@ L8B72 = L8B71 + 1
         LDA     L0C31
         BPL     L9055
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L9095
         LDX     #$24
@@ -2267,7 +2281,7 @@ L8B72 = L8B71 + 1
         BNE     L90A6
 
 .L90D9
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L90DC
         STX     L00DE
@@ -2544,7 +2558,7 @@ L8B72 = L8B71 + 1
         LDA     L0C31
         BPL     L9282
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L92EA
         LDA     #$00
@@ -2712,7 +2726,7 @@ L8B72 = L8B71 + 1
         JMP     L9301
 
 .L93DF
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L93E2
         LDA     #$00
@@ -2850,7 +2864,7 @@ L8B72 = L8B71 + 1
         LDA     L0C31
         BPL     L946E
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L94C6
         CLC
@@ -3825,7 +3839,7 @@ L8B72 = L8B71 + 1
 
         JSR     L9CDC
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L9AFA
         ASL     A
@@ -4228,7 +4242,7 @@ endif
         BNE     L9D21
 
 .L9D4F
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L9D52
         LDX     L032E
@@ -4612,7 +4626,7 @@ endif
         LDA     L031F
         JSR     L9F95
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L9F95
         AND     #$02
@@ -5104,7 +5118,7 @@ endif
         ORA     (L00F8),Y
         BNE     LA264
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LA264
         LDA     (L00F8),Y
@@ -5171,7 +5185,7 @@ endif
         BEQ     LA2DD
 
 .LA2DA
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LA2DD
         LDA     L00DA
@@ -5361,7 +5375,7 @@ endif
         DEC     L032E
         BNE     LA3A8
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LA40E
         JSR     LB851
@@ -9063,7 +9077,7 @@ LAD50 = LAD4F + 1
         LDY     #$3C
         JSR     LBD2F
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LBA94
         PLA
@@ -9083,7 +9097,7 @@ LAD50 = LAD4F + 1
         LDY     #$40
         JSR     LBD2F
 
-        JMP     L8C6F
+        JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LBAB6
         LDY     #$24
