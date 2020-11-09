@@ -7,6 +7,7 @@ endmacro
 wrchv = $020E
 vduv = $0226
 xvduv = $0DD8
+vduCurrentScreenMODE = $0355
 vduJumpVector = $035D
 extendedVectorTableVduV = $ff39
 
@@ -188,7 +189,6 @@ L0348   = $0348
 L0352   = $0352
 L0353   = $0353
 L0354   = $0354
-L0355   = $0355
 L0359   = $0359
 if BBC_B_PLUS
 L035A   = $035A
@@ -1687,7 +1687,7 @@ L8B72 = L8B71 + 1
 
 .L8D0E
 {
-        LDA     L0355
+        LDA     vduCurrentScreenMODE
         BNE     L8D16
 
         SEC
@@ -1737,7 +1737,7 @@ L8B72 = L8B71 + 1
         BPL     L8D3B
 
         LDA     #$55
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         BNE     L8D5D
 
         LDA     #$33
@@ -2304,7 +2304,7 @@ L8B72 = L8B71 + 1
         LDA     L0301,X
         SBC     L0301,Y
         STA     L0C18
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     L8B18,X
         STA     L0C36
         AND     #$01
@@ -5574,7 +5574,7 @@ endif
         PHA
         STA     (L00DC),Y
         DEY
-        LDA     L0355
+        LDA     vduCurrentScreenMODE
         STA     (L00DC),Y
         DEY
 .LA525
@@ -6129,7 +6129,7 @@ endif
         JSR     LA9BE
 
         SEC
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA3C,X
         ADC     L0344
         STA     L0344
@@ -6169,7 +6169,7 @@ endif
         JSR     LA9A3
 
         SEC
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA38,X
         ADC     L0346
         STA     L0346
@@ -6233,7 +6233,7 @@ endif
 
         JSR     LAA48
 
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA3C,X
         LSR     A
         CLC
@@ -6300,7 +6300,7 @@ endif
         LDX     #$61
         JSR     LB8A6
 
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA3C,X
         JSR     oswrch
 
@@ -6386,7 +6386,7 @@ endif
         LDA     #$00
         STA     L0345
         STA     L0347
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA26,X
         TAX
         LDA     L033C
@@ -6402,7 +6402,7 @@ endif
         ADC     #$00
         STA     L0345
         LDX     #$05
-        LDA     L0355
+        LDA     vduCurrentScreenMODE
         BNE     LAA77
 
         LDX     #$06
@@ -6664,7 +6664,7 @@ endif
 
         JSR     LB15B
 
-        LDA     L0355
+        LDA     vduCurrentScreenMODE
         LDY     #$04
         STA     (L00AC),Y
         LDY     #$49
@@ -6681,7 +6681,7 @@ endif
         STA     L033E
         LDA     #$07
         STA     L0348
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDY     #$00
         LDA     (L00AC),Y
         CMP     LAA32,X
@@ -6995,7 +6995,7 @@ LAD50 = LAD4F + 1
         JSR     LA8E0
 
         SEC
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA3C,X
         ADC     L0343
         STA     L0343
@@ -7120,7 +7120,7 @@ LAD50 = LAD4F + 1
         JSR     LA957
 
         CLC
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     L0343
         SBC     LAA3C,X
         STA     L0343
@@ -7135,7 +7135,7 @@ LAD50 = LAD4F + 1
         DEC     L033C
         LDA     L0363
         STA     L033E
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA42,X
         STA     L0343
         JMP     LA957
@@ -7152,7 +7152,7 @@ LAD50 = LAD4F + 1
         DEC     L033F
         LDA     L0363
         STA     L033E
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA42,X
         STA     L0343
         LDX     #$00
@@ -7170,7 +7170,7 @@ LAD50 = LAD4F + 1
         JSR     LA957
 
         SEC
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     L0343
         ADC     LAA3C,X
         STA     L0343
@@ -7365,7 +7365,7 @@ LAD50 = LAD4F + 1
 .LB0A0
         LDA     L0340
         STA     L033C
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA42,X
         STA     L0343
         LDA     L0363
@@ -7513,7 +7513,7 @@ LAD50 = LAD4F + 1
         DEX
         BNE     LB182
 
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     L0342
         CMP     LAA2C,X
         BCS     LB19C
@@ -7580,7 +7580,7 @@ LAD50 = LAD4F + 1
         DEX
         BNE     LB1C4
 
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     L0340
         CMP     LAA32,X
         BCS     LB1F5
@@ -7714,7 +7714,7 @@ LAD50 = LAD4F + 1
         DEC     L033C
         LDA     L0363
         STA     L033E
-        LDX     L0355
+        LDX     vduCurrentScreenMODE
         LDA     LAA42,X
         STA     L0343
 .LB2B0
@@ -8816,7 +8816,7 @@ LAD50 = LAD4F + 1
         EQUS    $1E,"Mode "
 
 .LB8F8
-        LDA     L0355
+        LDA     vduCurrentScreenMODE
         JSR     LB98A
 
         JSR     print_inline_counted
