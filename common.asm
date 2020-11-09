@@ -4,7 +4,7 @@ if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
         gcolPlotOptionsTable = $C41C
-        solidColourTablesMinus1 = $C423
+        twoColourMODEParameterTable = $C424
         checkPointXIsWithinGraphicsWindow = $D10F
         sixteenColourMODEMaskTable = $C407
         copyFourBytesWithinVDUVariables = $D48A
@@ -22,7 +22,7 @@ if BBC_B
         fillRow = $D6A6
 elif BBC_B_PLUS
         gcolPlotOptionsTable = $C413
-        solidColourTablesMinus1 = $C41A
+        twoColourMODEParameterTable = $C41B
         checkPointXIsWithinGraphicsWindow = $CA79
         sixteenColourMODEMaskTable = $C3FE
         copyFourBytesWithinVDUVariables = $D403
@@ -1645,7 +1645,7 @@ L8B72 = L8B71 + 1
         AND     #$07
         ADC     L00DA
         TAY
-        LDA     solidColourTablesMinus1,Y
+        LDA     twoColourMODEParameterTable - 1,Y
         STA     L031C,X
         DEX
         BPL     L8D3B
