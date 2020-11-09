@@ -5,6 +5,7 @@ macro unknown_machine
 endmacro
 
 wrchv = $020E
+vduv = $0226
 xvduv = $0DD8
 vduJumpVector = $035D
 extendedVectorTableVduV = $ff39
@@ -120,8 +121,6 @@ L00F8   = $00F8
 L00F9   = $00F9
 L00FF   = $00FF
 L0100   = $0100
-L0226   = $0226
-L0227   = $0227
 L022E   = $022E
 L0230   = $0230
 L0234   = $0234
@@ -499,9 +498,9 @@ endif
         JSR     L88F9
 
         LDA     #lo(extendedVectorTableVduV)
-        STA     L0226
+        STA     vduv + 0
         LDA     #hi(extendedVectorTableVduV)
-        STA     L0227
+        STA     vduv + 1
         LDA     #lo(L8CB4)
         STA     xvduv + 0
         LDA     #hi(L8CB4)
@@ -1039,17 +1038,17 @@ endif
         JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$67
-        LDA     L0226
+        LDA     vduv + 0
         PHA
         LDA     (L00F8),Y
-        STA     L0226
+        STA     vduv + 0
         PLA
         STA     (L00F8),Y
         INY
-        LDA     L0227
+        LDA     vduv + 1
         PHA
         LDA     (L00F8),Y
-        STA     L0227
+        STA     vduv + 1
         PLA
         STA     (L00F8),Y
         INY
@@ -1432,7 +1431,7 @@ L8B72 = L8B71 + 1
 .L8BB4
         LDA     L031F
         CLC
-        JMP     (L0226)
+        JMP     (vduv)
 
 .L8BBB
         PHA
@@ -1649,7 +1648,7 @@ L8B72 = L8B71 + 1
         RTS
 
 .L8CE3
-        JMP     (L0226)
+        JMP     (vduv)
 
 .L8CE6
         PHA
