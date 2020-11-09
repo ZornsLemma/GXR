@@ -9788,11 +9788,11 @@ LAD50 = LAD4F + 1
 
 .BeebDisEndAddr
 if BBC_B
-        SAVE "gxr120.bin",BeebDisStartAddr,BeebDisEndAddr
+        SAVE "gxr120.rom",BeebDisStartAddr,BeebDisEndAddr
 elif BBC_B_PLUS
-        SAVE "gxr200.bin",BeebDisStartAddr,BeebDisEndAddr
+        SAVE "gxr200.rom",BeebDisStartAddr,BeebDisEndAddr
 elif ELECTRON
-        SAVE "gxr100.bin",BeebDisStartAddr,BeebDisEndAddr
+        SAVE "gxr100.rom",BeebDisStartAddr,BeebDisEndAddr
 else
         unknown_machine
 endif

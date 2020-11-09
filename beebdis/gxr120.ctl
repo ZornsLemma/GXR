@@ -1,8 +1,7 @@
 cpu 6502
-load $8000 gxr200.orig
-save gxr200.asm
-symbols gxr200.sym
-newsym z.sym ; TODO: get rid of this
+load $8000 ..\roms\gxr120.orig
+save ..\asm\gxr120.asm
+symbols gxr120.sym
 
 ; ROM header
 string $8000 3 ; text in language entry
@@ -14,6 +13,9 @@ stringz pc ; title
 stringz pc ; copyright
 
 stringz $81e0
+entry pc
+;stringz $81f5
+;entry pc
 newpc $81f5
 repeat 18
     stringz pc
@@ -62,129 +64,127 @@ byte $89a0
 string $89a1 $1f
 entry pc
 
-byte $89de
-string $89df $0b
+byte $89dd
+string $89de $0b
 entry pc
 
-byte $8a8b $96
+byte $8a8a $96
 entry pc
-byte $8b72 $43
-entry pc
-
-byte $a41d
-string $a41e $03
+byte $8b71 $43
 entry pc
 
-byte $a428
-string $a429 $06
+byte $a415
+string $a416 $03
 entry pc
 
-stringz $a58b
-entry pc
-stringz $a5a5
-entry pc
-stringz $a693
-entry pc
-stringz $a731
-entry pc
-stringz $a76e
-entry pc
-stringz $a7f0
-entry pc
-stringz $a802
+byte $a420
+string $a421 $06
 entry pc
 
-byte $a82d
-string $a82e $08
+stringz $a577
+entry pc
+stringz $a591
+entry pc
+stringz $a67f
+entry pc
+stringz $a71d
+entry pc
+stringz $a75a
+entry pc
+stringz $a7dc
+entry pc
+stringz $a7ee
 entry pc
 
-byte $a83c
-string $a83d $04
+byte $a819
+string $a81a $08
 entry pc
 
-byte $a84a
-string $a84b $04
+byte $a828
+string $a829 $04
 entry pc
 
-byte $a855
-string $a856 $06
+byte $a836
+string $a837 $04
 entry pc
 
-byte $a9aa
-string $a9ab $09
+byte $a841
+string $a842 $06
 entry pc
 
-byte $aa3a $22
+byte $a996
+string $a997 $09
 entry pc
 
-byte $ab34
-string $ab35 $0c
+byte $aa26 $22
 entry pc
 
-byte $ab67 $07
+byte $ab20
+string $ab21 $0c
 entry pc
 
-byte $ab52
-string $ab53 $13
+byte $ab53 $07
 entry pc
 
-byte $ac7b
-string $ac7c $0f
+byte $ab3e
+string $ab3f $13
 entry pc
 
-byte $ad63 $60
+byte $ac67
+string $ac68 $0f
 entry pc
 
-byte $b23c
-string $b23d $06
+byte $ad4f $60
 entry pc
 
-byte $b2d5
-string $b2d6 $06
+byte $b228
+string $b229 $06
 entry pc
 
-byte $b352
-string $b353 $09
+byte $b2c1
+string $b2c2 $06
 entry pc
 
-byte $b36e
-string $b36f $07
+byte $b33e
+string $b33f $09
 entry pc
 
-stringz $b8ae
+byte $b35a
+string $b35b $07
 entry pc
 
-byte $b905
-string $b906 $06
+stringz $b89a
+entry pc
+
+byte $b8f1
+string $b8f2 $06
+entry pc
+
+byte $b901
+string $b902 $09
 entry pc
 
 byte $b915
-string $b916 $09
+string $b916 $04
 entry pc
 
-byte $b929
-string $b92a $04
+byte $b936
+string $b937 $05
 entry pc
 
-byte $b94a
-string $b94b $05
+byte $b94f
+string $b950 $02
 entry pc
 
-byte $b963
-string $b964 $02
+byte $b95e
+string $b95f $07
 entry pc
 
-byte $b972
-string $b973 $07
+byte $b982
+string $b983 $06
 entry pc
 
-byte $b996
-string $b997 $06
+byte $b9e0 $10
 entry pc
 
-byte $b9f4 $10
-entry pc
-
-string $bfdb $25
-
-hexdump output.hex ; TODO: Get rid of this?
+string $bfc7 $39
