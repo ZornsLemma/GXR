@@ -4,40 +4,40 @@ if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
         gcolPlotOptionsTable = $C41C
-        solidColourTablesMinus1 = $C423 ; TODO: not too happy with this name
+        solidColourTablesMinus1 = $C423
         checkPointXIsWithinGraphicsWindow = $D10F
-        pixelTablesMinus1 = $C406 ; TODO: not too happy with this name
+        sixteenColourMODEMaskTable = $C407
         copyFourBytesWithinVDUVariables = $D48A
         exchangeTwoVDUBytes = $CDDE
         moveGraphicsCursorAddressUpOneCharacterCell = $D3D3
         moveGraphicsCursorAddressTotheRightAndUpdateMask = $D3ED
         moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D3FD
-        TODO10 = $D128
-        TODO11 = $D47C
-        TODO12 = $D482
-        TODO13 = $D864
-        TODO14 = $D0F3
-        TODO15 = $D14D
-        TODO16 = $D3F2
-        TODO17 = $D6A6
+        checkPointIsWithinWindowHorizontalOrVertical = $D128
+        copyEightBytesWithinVDUVariables = $D47C
+        copyTwoBytesWithinVDUVariables = $D482
+        setScreenAddress = $D864
+        plotPointWithinBoundsAtY = $D0F3
+        plotConvertExternalRelativeCoordinatesToPixels = $D14D
+        moveGraphicsCursorAddressTotheRight = $D3F2
+        fillRow = $D6A6
 elif BBC_B_PLUS
         gcolPlotOptionsTable = $C413
         solidColourTablesMinus1 = $C41A
         checkPointXIsWithinGraphicsWindow = $CA79
-        pixelTablesMinus1 = $C3FD
+        sixteenColourMODEMaskTable = $C3FE
         copyFourBytesWithinVDUVariables = $D403
         exchangeTwoVDUBytes = $CDA6
         moveGraphicsCursorAddressUpOneCharacterCell = $D34B
         moveGraphicsCursorAddressTotheRightAndUpdateMask = $D365
         moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D375
-        TODO10 = $D0D9
-        TODO11 = $D3F4
-        TODO12 = $D3FB
-        TODO13 = $D7ED
-        TODO14 = $D0BF
-        TODO15 = $D0FE
-        TODO16 = $D36A
-        TODO17 = $D62E
+        checkPointIsWithinWindowHorizontalOrVertical = $D0D9
+        copyEightBytesWithinVDUVariables = $D3F4
+        copyTwoBytesWithinVDUVariables = $D3FB
+        setScreenAddress = $D7ED
+        plotPointWithinBoundsAtY = $D0BF
+        plotConvertExternalRelativeCoordinatesToPixels = $D0FE
+        moveGraphicsCursorAddressTotheRight = $D36A
+        fillRow = $D62E
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
         B_PLUS_LD427 = $D427
@@ -1304,14 +1304,14 @@ L8A89 = L8A87+2
         JSR     L8B5D
 
         LDY     L00DE
-        JMP     TODO17
+        JMP     fillRow
 
 .L8B4C
         JSR     L8B55
 
         BNE     L8B54
 
-        JMP     TODO14
+        JMP     plotPointWithinBoundsAtY
 
 .L8B54
         RTS
@@ -1322,7 +1322,7 @@ L8A89 = L8A87+2
         BNE     L8B54
 
 .L8B5A
-        JSR     TODO13
+        JSR     setScreenAddress
 
 .L8B5D
         LDA     L0C00,Y
@@ -1406,7 +1406,7 @@ L8B72 = L8B71 + 1
         LDA     #$80
         STA     (L00F8),Y
         LDX     #$20
-        JSR     TODO15
+        JSR     plotConvertExternalRelativeCoordinatesToPixels
 
         LDY     #$05
         LDA     L031F
@@ -1800,13 +1800,13 @@ L8B72 = L8B71 + 1
         PLA
 .L8E2A
         PHA
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         PLA
         TAX
         INX
         INX
-        JMP     TODO12
+        JMP     copyTwoBytesWithinVDUVariables
 
 .L8E35
         LDA     L035B,X
@@ -3951,7 +3951,7 @@ if BBC_B
         EOR     L00DA
         STA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     TODO14
+        JSR     plotPointWithinBoundsAtY
 else
         unknown_machine
 endif
@@ -4372,7 +4372,7 @@ elif BBC_B_PLUS
         LDX     L00D1
         LDA     L032F
         STA     L00D1
-        JSR     TODO14
+        JSR     plotPointWithinBoundsAtY
         STX     L00D1
 else
         unknown_machine
@@ -4540,7 +4540,7 @@ endif
         STA     L00DA
         DEX
         DEX
-        JSR     TODO10
+        JSR     checkPointIsWithinWindowHorizontalOrVertical
 
         INX
         INX
@@ -4659,7 +4659,7 @@ endif
 .LA03A
         LDX     #$34
         LDY     #$28
-        JSR     TODO11
+        JSR     copyEightBytesWithinVDUVariables
 
         JMP     L8DE5
 
@@ -4751,11 +4751,11 @@ endif
 .LA0D9
         LDX     #$2A
         LDY     #$32
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         LDX     #$36
         LDY     #$3E
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         LDX     #$2A
         JSR     L9F7C
@@ -4826,7 +4826,7 @@ endif
 .LA133
         STA     L00DA
         SEC
-        JSR     TODO16
+        JSR     moveGraphicsCursorAddressTotheRight
 
 if BBC_B
         LDA     (L00D6),Y
@@ -4891,7 +4891,7 @@ else
 endif
 .LA181
         SEC
-        JSR     TODO16
+        JSR     moveGraphicsCursorAddressTotheRight
 
         DEX
         BNE     LA17C
@@ -5003,7 +5003,7 @@ endif
         CLC
         ADC     L0361
         TAY
-        LDA     pixelTablesMinus1,Y
+        LDA     sixteenColourMODEMaskTable - 1,Y
         EOR     L8A89,Y
         STA     L00DC
         LDA     L0300,X
@@ -5193,7 +5193,7 @@ endif
         BNE     LA34B
 
         LDX     #$38
-        JSR     TODO13
+        JSR     setScreenAddress
 
         SEC
         LDA     L0329
@@ -5356,7 +5356,7 @@ endif
 
         LDX     #$00
         LDY     #$28
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
 .LA452
         PLA
@@ -5365,7 +5365,7 @@ endif
 
         LDX     #$02
         LDY     #$2A
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
 .LA45E
         LDX     #$2C
@@ -5383,7 +5383,7 @@ endif
 
         LDX     #$04
         LDY     #$2C
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
 .LA477
         PLA
@@ -5392,11 +5392,11 @@ endif
 
         LDX     #$06
         LDY     #$2E
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
 .LA483
         LDX     #$2C
-        JSR     TODO13
+        JSR     setScreenAddress
 
         SEC
         LDA     L032C
@@ -9016,7 +9016,7 @@ LAD50 = LAD4F + 1
 
         LDX     #$29
         LDY     #$44
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         LDX     #$44
         LDY     #$40
@@ -9120,11 +9120,11 @@ LAD50 = LAD4F + 1
 
         LDX     #$3C
         LDY     #$3A
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         LDX     #$36
         LDY     #$38
-        JMP     TODO12
+        JMP     copyTwoBytesWithinVDUVariables
 
 .LBB6D
         LDX     #$38
@@ -9136,11 +9136,11 @@ LAD50 = LAD4F + 1
 
         LDX     #$3E
         LDY     #$38
-        JSR     TODO12
+        JSR     copyTwoBytesWithinVDUVariables
 
         LDX     #$34
         LDY     #$3A
-        JMP     TODO12
+        JMP     copyTwoBytesWithinVDUVariables
 
 .LBB86
         RTS
