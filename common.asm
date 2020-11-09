@@ -4,6 +4,7 @@ macro unknown_machine
         error "Can't assemble for unknown machine!"
 endmacro
 
+wrchv = $020E
 xvduv = $0DD8
 vduJumpVector = $035D
 extendedVectorTableVduV = $ff39
@@ -119,8 +120,6 @@ L00F8   = $00F8
 L00F9   = $00F9
 L00FF   = $00FF
 L0100   = $0100
-L020E   = $020E
-L020F   = $020F
 L0226   = $0226
 L0227   = $0227
 L022E   = $022E
@@ -394,6 +393,7 @@ endif
         CMP     L0DF0,X
         BEQ     L80A7
 
+        ; We didn't have any workspace before, save address  and initialise parts of it.
         STA     L0DF0,X
         LDA     #$00
         LDY     #$52
@@ -462,6 +462,8 @@ endif
         STA     (L00F8),Y
         JSR     L8A6A
 
+        ; Copy the code at L8955 into our workspace and patch the addresses.
+        ;
         ; Although I've tried to derive the correct values at assembly time, it's
         ; almost certainly necessary that the code copied doesn't get any longer as
         ; offset $48 holds an (unrelated) value. We could probably get away with
@@ -476,12 +478,12 @@ endif
         BPL     L80FD
 }
 
-        LDY     #(jmp_to_patch_1 - L8955) + 1
-        LDA     L020E
+        LDY     #(jmp_wrchv_patch - L8955) + 1
+        LDA     wrchv + 0
         PHA
         STA     (L00F8),Y
         INY
-        LDA     L020F
+        LDA     wrchv + 1
         STA     (L00F8),Y
         LDY     #(jmp_to_patch_2 - L8955) + 2
         STA     (L00F8),Y
@@ -513,9 +515,9 @@ endif
 
         CLC
         LDA     #$00
-        STA     L020E
+        STA     wrchv + 0
         LDA     L032A
-        STA     L020F
+        STA     wrchv + 1
         LDY     #$48
         ADC     (L00F8),Y
         LDY     #$4F
@@ -1103,8 +1105,8 @@ endif
 
 .L8961
         PLA
-.jmp_to_patch_1
-        JMP     LFFFF
+.jmp_wrchv_patch
+        JMP     LFFFF ; patched to JMP to original WRCHV
 
 .L8965
         LDA     vduJumpVector + 1
