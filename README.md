@@ -26,7 +26,7 @@ As you'd expect the BBC B (1.20) and B+ (2.00) versions are very nearly identica
 
 * Internal graphics routines have moved in the OS ROM and the correct addresses need to be used. The runtime check for the matching OS version has to be altered as well, of course.
 
-* GXR 1.20 automatically enables itself if (and only if) it's in an odd-numbered ROM bank. GXR 2.00 instead automatically enables itself if (and only if) it's in a ROM bank which has bit 1 set, i.e. banks 2, 3, 6, 7, 10, 11, 14 or 15. I believe this is done because each physical ROM socket in a B+ correspond to two 16K banks, so it's not possible to choose either an odd or even-numbered ROM bank by plugging a physical 16K ROM into different sockets.
+* GXR 1.20 automatically enables itself if (and only if) it's in an odd-numbered ROM bank. GXR 2.00 instead automatically enables itself if (and only if) it's in a ROM bank which has bit 1 set, i.e. banks 2, 3, 6, 7, 10, 11, 14 or 15. I believe this is done because each physical ROM socket in a B+ corresponds to two 16K banks, so it's not possible to choose either an odd or even-numbered ROM bank by plugging a physical 16K ROM into different sockets.
 
 * In order for the GXR to work correctly in shadow screen modes on the B+, *all* screen reads and writes must be done using code executing at the special hardware-recognised addresses in the OS ROM. This means that where GXR 1.20 sometimes uses its own code to read and write the screen RAM, GXR 2.00 has to call into the OS ROM. In a few places this requires slightly more convoluted code because the OS ROM doesn't happen to contain a subroutine which does exactly what's required.
 
