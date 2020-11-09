@@ -62,6 +62,13 @@ elif ELECTRON
         plotConvertExternalRelativeCoordinatesToPixels = $D05E ; TODO: ELK ZP DIFFS
         moveGraphicsCursorAddressUpOneCharacterCell = $D2EA ; TODO: ELK ZP DIFFS, BEEB D7 IS ELK D5
         moveGraphicsCursorAddressTotheRightAndUpdateMask = $D304 ; TODO: ELK ZP DIFFS
+        moveGraphicsCursorAddressTotheRight = $D309 ; TODO: ELK ZP DIFFS
+        moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D314 ; TODO: ELK ZP DIFFS
+        copyEightBytesWithinVDUVariables = $D393
+        copyTwoBytesWithinVDUVariables = $D399
+        copyFourBytesWithinVDUVariables = $D3A1 ; TODO: ELK ZP DIFFS
+        fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
+        setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
 else
         unknown_machine
 endif
