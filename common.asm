@@ -441,6 +441,11 @@ endif
         STA     (L00F8),Y
         JSR     L8A6A
 
+        ; Although I've tried to derive the correct values at assembly time, it's
+        ; almost certainly necessary that the code copied doesn't get any longer as
+        ; offset $48 holds an (unrelated) value. We could probably get away with
+        ; shrinking the copied code, but I haven't tried this.
+        assert (L899D - L8955) - 1 == $47
         LDY     #(L899D - L8955) - 1
 .L80FD
         LDA     L8955,Y
