@@ -1159,6 +1159,8 @@ if BBC_B
         INX
 elif BBC_B_PLUS
         CPX     #$FB
+elif ELECTRON
+        CPX     #$01
 else
         unknown_machine
 endif
@@ -3969,7 +3971,7 @@ L8B72 = L8B71 + 1
         BEQ     L9C1E
 
 .L9C0E
-if BBC_B
+if BBC_B or ELECTRON
         LDA     L00D1
         AND     L00D4
         ORA     (L00D6),Y
@@ -4387,7 +4389,7 @@ endif
 .L9E8B
         DEC     L0324
 .L9E8E
-if BBC_B
+if BBC_B or ELECTRON
         LDA     L032F
         AND     L00D4
         ORA     (L00D6),Y
@@ -4495,7 +4497,7 @@ endif
 
 .L9F24
         LDY     L031A
-if BBC_B
+if BBC_B or ELECTRON
         LDA     (L00D6),Y
 elif BBC_B_PLUS
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
@@ -4835,7 +4837,7 @@ endif
         LDA     L0344
         STA     L00DD
 .LA128
-if BBC_B
+if BBC_B or ELECTRON
         LDA     (L00D6),Y
 elif BBC_B_PLUS
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
@@ -4856,7 +4858,7 @@ endif
         SEC
         JSR     moveGraphicsCursorAddressTotheRight
 
-if BBC_B
+if BBC_B or ELECTRON
         LDA     (L00D6),Y
 elif BBC_B_PLUS
         LDX     L00DA
@@ -4910,7 +4912,7 @@ endif
 
 .LA17C
         LDA     L0C17,X
-if BBC_B
+if BBC_B or ELECTRON
         STA     (L00D6),Y
 elif BBC_B_PLUS
         JSR     b_plus_sta_d6_indirect_y
@@ -4930,7 +4932,7 @@ endif
         AND     L00DA
         STA     L00DA
 .LA191
-if BBC_B
+if BBC_B or ELECTRON
         LDA     L0C17,X
         EOR     (L00D6),Y
         AND     L00DA
@@ -5283,7 +5285,7 @@ endif
         ORA     L00A8
         EOR     L00A9
         LDY     L031A
-if BBC_B
+if BBC_B or ELECTRON
         ORA     (L00D6),Y
         EOR     L00D5
         STA     (L00D6),Y
@@ -5535,7 +5537,7 @@ endif
         PHA
 .LA53C
         LDY     L031A
-if BBC_B
+if BBC_B or ELECTRON
         LDA     (L00D6),Y
 elif BBC_B_PLUS
         LDA     L00DA ; stash value at &DA which subroutine call will corrupt
@@ -9681,6 +9683,8 @@ if BBC_B
         SAVE "gxr120.bin",BeebDisStartAddr,BeebDisEndAddr
 elif BBC_B_PLUS
         SAVE "gxr200.bin",BeebDisStartAddr,BeebDisEndAddr
+elif ELECTRON
+        SAVE "gxr100.bin",BeebDisStartAddr,BeebDisEndAddr
 else
         unknown_machine
 endif
