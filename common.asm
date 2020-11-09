@@ -460,10 +460,10 @@ endif
         DEY
         PLA
         STA     (L00F8),Y
-        LDY     #$1D
+        LDY     #(lda_imm_to_patch_1 - L8955) + 1
         LDA     L032A
         STA     (L00F8),Y
-        LDY     #$37
+        LDY     #(lda_imm_to_patch_2 - L8955) + 1
         LDA     L00F4
         STA     (L00F8),Y
         JSR     L88F9
@@ -1094,6 +1094,7 @@ endif
 
         LDA     #$31
         STA     vduJumpVector + 0
+.lda_imm_to_patch_1
         LDA     #$FF
         STA     vduJumpVector + 1
         BNE     L8961
@@ -1121,6 +1122,7 @@ endif
         PHA
         LDA     L00F4
         PHA
+.lda_imm_to_patch_2
         LDA     #$FF
         STA     L00F4
         STA     LFE30
