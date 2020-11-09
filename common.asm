@@ -3,44 +3,50 @@
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
+        sixteenColourMODEMaskTable = $C407
         gcolPlotOptionsTable = $C41C
         twoColourMODEParameterTable = $C424
-        checkPointXIsWithinGraphicsWindow = $D10F
-        sixteenColourMODEMaskTable = $C407
-        copyFourBytesWithinVDUVariables = $D48A
         exchangeTwoVDUBytes = $CDDE
+        plotPointWithinBoundsAtY = $D0F3
+        checkPointXIsWithinGraphicsWindow = $D10F
+        checkPointIsWithinWindowHorizontalOrVertical = $D128
+        plotConvertExternalRelativeCoordinatesToPixels = $D14D
         moveGraphicsCursorAddressUpOneCharacterCell = $D3D3
         moveGraphicsCursorAddressTotheRightAndUpdateMask = $D3ED
+        moveGraphicsCursorAddressTotheRight = $D3F2
         moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D3FD
-        checkPointIsWithinWindowHorizontalOrVertical = $D128
         copyEightBytesWithinVDUVariables = $D47C
         copyTwoBytesWithinVDUVariables = $D482
-        setScreenAddress = $D864
-        plotPointWithinBoundsAtY = $D0F3
-        plotConvertExternalRelativeCoordinatesToPixels = $D14D
-        moveGraphicsCursorAddressTotheRight = $D3F2
+        copyFourBytesWithinVDUVariables = $D48A
         fillRow = $D6A6
+        setScreenAddress = $D864
 elif BBC_B_PLUS
+        sixteenColourMODEMaskTable = $C3FE
         gcolPlotOptionsTable = $C413
         twoColourMODEParameterTable = $C41B
-        checkPointXIsWithinGraphicsWindow = $CA79
-        sixteenColourMODEMaskTable = $C3FE
-        copyFourBytesWithinVDUVariables = $D403
         exchangeTwoVDUBytes = $CDA6
+        plotPointWithinBoundsAtY = $D0BF
+        checkPointXIsWithinGraphicsWindow = $CA79
+        checkPointIsWithinWindowHorizontalOrVertical = $D0D9
+        plotConvertExternalRelativeCoordinatesToPixels = $D0FE
         moveGraphicsCursorAddressUpOneCharacterCell = $D34B
         moveGraphicsCursorAddressTotheRightAndUpdateMask = $D365
+        moveGraphicsCursorAddressTotheRight = $D36A
         moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D375
-        checkPointIsWithinWindowHorizontalOrVertical = $D0D9
         copyEightBytesWithinVDUVariables = $D3F4
         copyTwoBytesWithinVDUVariables = $D3FB
-        setScreenAddress = $D7ED
-        plotPointWithinBoundsAtY = $D0BF
-        plotConvertExternalRelativeCoordinatesToPixels = $D0FE
-        moveGraphicsCursorAddressTotheRight = $D36A
+        copyFourBytesWithinVDUVariables = $D403
         fillRow = $D62E
-        B_PLUS_LD0CD = $D0CD
-        B_PLUS_LD0D0 = $D0D0
-        B_PLUS_LD427 = $D427
+        setScreenAddress = $D7ED
+
+        ; We need to execute LDA (&D6),Y and STA (&D6),Y from within the OS
+        ; address space in order to access main or shadow RAM as appropriate.
+        ; There isn't a bare LDA (&D6),Y:RTS we can use, so we do the best we
+        ; can, which requires a bit of fiddling around in the GXR code compared
+        ; to the model B case.
+        b_plus_sta_d6_indirect_y = $D0CD
+        b_plus_modify_d6_indirect_y_by_ora_d4_eor_d5 = $D0D0
+        b_plus_lda_d6_indirect_y_eor_35a_sta_da = $D427
 else
         unknow_machine
 endif
@@ -4470,8 +4476,8 @@ endif
 if BBC_B
         LDA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     B_PLUS_LD427
-        EOR     L035A
+        JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
+        EOR     L035A ; undo the unwanted eor from subroutine call
 else
         unknown_machine
 endif
@@ -4810,8 +4816,8 @@ endif
 if BBC_B
         LDA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     B_PLUS_LD427
-        EOR     L035A
+        JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
+        EOR     L035A ; undo the unwanted eor from subroutine call
 else
         unknown_machine
 endif
@@ -4832,10 +4838,10 @@ if BBC_B
         LDA     (L00D6),Y
 elif BBC_B_PLUS
         LDX     L00DA
-        JSR     B_PLUS_LD427
+        JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
-        EOR     L035A
-        STX     L00DA
+        EOR     L035A ; undo the unwanted eor from subroutine call
+        STX     L00DA ; undo the unwanted sta from subroutine call
 else
         unknown_machine
 endif
@@ -4885,7 +4891,7 @@ endif
 if BBC_B
         STA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     B_PLUS_LD0CD
+        JSR     b_plus_sta_d6_indirect_y
 else
         unknown_machine
 endif
@@ -4910,16 +4916,16 @@ if BBC_B
         STA     (L00D6),Y
         RTS
 elif BBC_B_PLUS
-        LDA     L00DA
+        LDA     L00DA ; stash value at &DA which subroutine call will corrupt
         STA     L00DB
-        JSR     B_PLUS_LD427
+        JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
-        EOR     L035A
-        STA     L00DA
+        EOR     L035A ; undo the unwanted eor from subroutine call
+        STA     L00DA ; set &DA to (&D6),Y
         EOR     L0C17,X
         AND     L00DB
         EOR     L00DA
-        JMP     B_PLUS_LD0CD
+        JMP     b_plus_sta_d6_indirect_y
 else
         unknown_machine
 endif
@@ -5261,7 +5267,7 @@ if BBC_B
         STA     (L00D6),Y
 elif BBC_B_PLUS
         STA     L00D4
-        JSR     B_PLUS_LD0D0
+        JSR     b_plus_modify_d6_indirect_y_by_ora_d4_eor_d5
 else
         unknown_machine
 endif
@@ -5510,12 +5516,12 @@ endif
 if BBC_B
         LDA     (L00D6),Y
 elif BBC_B_PLUS
-        LDA     L00DA
+        LDA     L00DA ; stash value at &DA which subroutine call will corrupt
         PHA
-        JSR     B_PLUS_LD427
+        JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
-        EOR     L035A
-        TAY
+        EOR     L035A ; undo the unwanted eor from subroutine call
+        TAY           ; restore &DA, preserving A
         PLA
         STA     L00DA
         TYA
