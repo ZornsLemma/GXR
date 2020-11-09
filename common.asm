@@ -39,7 +39,6 @@ elif BBC_B_PLUS
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
         B_PLUS_LD36A = $D36A
-        B_PLUS_LD3FB = $D3FB
         B_PLUS_LD427 = $D427
 else
         unknow_machine
@@ -1820,25 +1819,13 @@ L8B72 = L8B71+1
         PLA
 .L8E2A
         PHA
-if BBC_B
         JSR     TODO12
-elif BBC_B_PLUS
-        JSR     B_PLUS_LD3FB
-else
-        unknown_machine
-endif
 
         PLA
         TAX
         INX
         INX
-if BBC_B
         JMP     TODO12
-elif BBC_B_PLUS
-        JMP     B_PLUS_LD3FB
-else
-        unknown_machine
-endif
 
 .L8E35
         LDA     L035B,X
