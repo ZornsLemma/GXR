@@ -517,7 +517,7 @@ endif
         JSR     L8324
 
         CLC
-        LDA     #$00
+        LDA     #our_stub_wrchv_handler_rom - L8955
         STA     wrchv + 0
         LDA     L032A
         STA     wrchv + 1
@@ -1081,6 +1081,7 @@ endif
         TAY
         RTS
 
+; This must preserve the carry flag.
 .L8943_set_f8_f9_to_private_workspace
         PHA
         TXA
@@ -1096,8 +1097,10 @@ endif
         RTS
 
 ; The code from L8955 to L899D (exclusive) is copied into RAM by L08FD and
-; patched afterwards.
+; patched afterwards. WRCHV is set to point to the RAM copy of
+; our_stub_wrchv_handler_rom.
 .L8955
+.our_stub_wrchv_handler_rom
         assert  lo(vdu25EntryPoint) != lo(vdu22EntryPoint)
         PHA
         LDA     vduJumpVector + 0
@@ -1117,7 +1120,11 @@ endif
         CMP     #hi(vdu25EntryPoint)
         BNE     L8961
 
-        LDA     #our_stub_wrchv_handler_rom - L8955
+        ; We're inside OSWRCH and vduJumpVector == vdu25EntryPoint, i.e. we're
+        ; PLOTting something. Change vduJumpVector to the RAM copy of
+        ; our_stuf_vdu25EntryPoint_rom and pass the call through to the original
+        ; OSWRCH.
+        LDA     #our_stub_vdu25EntryPoint_rom - L8955
         STA     vduJumpVector + 0
 .lda_imm_our_stub_wrchv_handler_ram_hi_patch
         LDA     #$FF ; patched to LDA #hi(our_private_workspace)
@@ -1129,6 +1136,9 @@ endif
         CMP     #hi(vdu22EntryPoint)
         BNE     L8961
 
+        ; We're inside OSWRCH and vduJumpVector == vdu22EntryPoint, i.e. we're
+        ; changing mode. Pass the call through to the original OSWRCH and then
+        ; enter L8BCE_our_vdu_22_25_entry_point with carry set.
         PLA
 .jsr_old_wrchv_patch
         JSR     LFFFF ; patched to JSR to original WRCHV
@@ -1136,8 +1146,9 @@ endif
         SEC
         BCS     L8987
 
-; We set WRCHV to point to the RAM copy of our_stub_wrchv_handler_rom
-.our_stub_wrchv_handler_rom
+; If we see vduJumpVector == vdu25EntryPoint, our WRCHV handler changes it to
+; point to the RAM copy of our_stub_vdu25EntryPoint_rom.
+.our_stub_vdu25EntryPoint_rom
         CLC
 .L8987
         PHA
@@ -1156,7 +1167,7 @@ elif ELECTRON
 else
         unknown_machine
 endif
-        JSR     L8BCE_our_main_wrch_handler
+        JSR     L8BCE_our_vdu_22_25_entry_point
 
         PLA
 if BBC_B or BBC_B_PLUS
@@ -1458,7 +1469,9 @@ L8B72 = L8B71 + 1
         PLA
         RTS
 
-.L8BCE_our_main_wrch_handler
+; Our WRCHV handler arranged for this to be called with carry set after VDU 22
+; (mode change) and carry clear during VDU 25 (PLOT).
+.L8BCE_our_vdu_22_25_entry_point
         JSR     L8943_set_f8_f9_to_private_workspace
 
         BCS     L8BBB
@@ -9736,6 +9749,7 @@ LAD50 = LAD4F + 1
         RTS
 
 if ELECTRON
+; This must preserve X, Y and the carry flag.
 .electron_sta_romsel
         PHA
         LDA     #12
