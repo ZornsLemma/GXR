@@ -341,7 +341,7 @@ endif
 .L8052
         RTS
 
-.L8053
+.L8053_hard_break
         LDA     #$00
         STA     L0DF0,X
         TXA
@@ -352,17 +352,18 @@ elif BBC_B_PLUS
 elif ELECTRON
         ; TODO: Copy BBC B for now, ask Electron experts for advice on best option -
         ; I think this is controlling the automatic enable/disable of ROM based on
-        ; which bank it's in.
+        ; which bank it's in. Also see GXR manual, it may say what Electron does.
         AND     #$01
 else
         unknown_machine
 endif
-        BNE     L8087
+        BNE     L8087_claim_workspace
 
 .L805D
         LDA     #service_request_private_workspace
         RTS
 
+; Y contains the lowest free page
 .L8060_handle_service_request_private_workspace
         STA     L0328
         STY     L032A
@@ -380,14 +381,15 @@ endif
 .L8076
         LDY     L032A
         STY     L00F9
-        LDA     L028D
+        LDA     L028D ; last break type: 0=soft, 1=power on, 2=hard
         AND     #$03
-        BNE     L8053
+        BNE     L8053_hard_break
 
         LDA     L0DF0,X
         BEQ     L805D
 
-.L8087
+.L8087_claim_workspace
+{
         TYA
         CMP     L0DF0,X
         BEQ     L80A7
@@ -466,11 +468,13 @@ endif
         ; shrinking the copied code, but I haven't tried this.
         assert (L899D - L8955) - 1 == $47
         LDY     #(L899D - L8955) - 1
+{
 .L80FD
         LDA     L8955,Y
         STA     (L00F8),Y
         DEY
         BPL     L80FD
+}
 
         LDY     #(jmp_to_patch_1 - L8955) + 1
         LDA     L020E
@@ -520,6 +524,7 @@ endif
         LDX     L00F4
         LDA     L0328
         RTS
+}
 
 .L8167_handle_service_unrecognised_oscli
         PHA
