@@ -1074,7 +1074,7 @@ endif
         STA     vduTempStoreDB
         PLA
         STA     vduTempStoreDA
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         LDA     (vduTempStoreDA),Y
         BNE     L88CE
@@ -1834,9 +1834,9 @@ L8B72 = L8B71 + 1
 .L8D85
         LDA     (vduTempStoreDC),Y
         STA     (vduTempStoreDA),Y
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
-        JSR     LB7AA
+        JSR     LB7AA_inc_vduTempStoreDC_DD
 
         LDA     vduTempStoreDE
         BNE     L8D95
@@ -6481,7 +6481,7 @@ endif
         RTS
 
 .LAA8F
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         LDX     vduTempStoreDA
         LDY     vduTempStoreDB
@@ -6626,7 +6626,7 @@ endif
         CMP     #$2C
         BNE     LAB82
 
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         LDX     vduTempStoreDA
         LDY     vduTempStoreDB
@@ -7618,7 +7618,7 @@ LAD50 = LAD4F + 1
 .LB1C4
         TYA
         STA     (vduTempStoreDA),Y
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         TXA
         PHA
@@ -7627,9 +7627,9 @@ LAD50 = LAD4F + 1
 .LB1CF
         LDA     (vduTempStoreDC),Y
         STA     (vduTempStoreDA),Y
-        JSR     LB7AA
+        JSR     LB7AA_inc_vduTempStoreDC_DD
 
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         DEX
         BNE     LB1CF
@@ -8258,6 +8258,7 @@ LAD50 = LAD4F + 1
         RTS
 
 .print_inline_counted
+{
         PLA
         STA     vduTempStoreDA
         PLA
@@ -8266,12 +8267,12 @@ LAD50 = LAD4F + 1
         PHA
         TYA
         PHA
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         LDY     #$00
         LDA     (vduTempStoreDA),Y
         TAX
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
 .LB59C
         LDA     vduTempStoreDA
@@ -8285,7 +8286,7 @@ LAD50 = LAD4F + 1
         STA     vduTempStoreDB
         PLA
         STA     vduTempStoreDA
-        JSR     LB7A3
+        JSR     LB7A3_inc_vduTempStoreDA_DB
 
         DEX
         BNE     LB59C
@@ -8295,6 +8296,7 @@ LAD50 = LAD4F + 1
         PLA
         TAX
         JMP     (vduTempStoreDA)
+}
 
 .LB5BA
         JSR     LB6C5
@@ -8618,7 +8620,7 @@ LAD50 = LAD4F + 1
 .LB7A0
         JMP     LA94E
 
-.LB7A3
+.LB7A3_inc_vduTempStoreDA_DB
         INC     vduTempStoreDA
         BNE     LB7A9
 
@@ -8626,7 +8628,7 @@ LAD50 = LAD4F + 1
 .LB7A9
         RTS
 
-.LB7AA
+.LB7AA_inc_vduTempStoreDC_DD
         INC     vduTempStoreDC
         BNE     LB7A9
 
