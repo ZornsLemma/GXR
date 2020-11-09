@@ -8,6 +8,11 @@ xvduv = $0DD8
 vduJumpVector = $035D
 extendedVectorTableVduV = $ff39
 
+service_request_private_workspace = $02
+service_unrecognised_oscli = $04
+service_unrecognised_osbyte = $07
+service_help = $09
+
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
@@ -296,6 +301,7 @@ LFFFF   = $FFFF
 .L8008
         EQUB    $01
 
+        ; TODO: Somewhere (perhaps in dead space at end) put e.g. a 2020 TIME$ date so that releases can be distinguished - as the version number is likely to "stick" at 1.00 to match the OS, some other way to distinguish is good - perhaps also change the binary version?
 .L8009
 if BBC_B
         EQUS    "Graphics Extension ROM 1.20",$0A,$0D,$00
@@ -310,22 +316,22 @@ endif
         EQUS    "(C)1985 Acornsoft",$00
 
 .L8039
-        CMP     #$02
+        CMP     #service_request_private_workspace
         BEQ     L8060
 
-        CMP     #$07
+        CMP     #service_unrecognised_osbyte
         BNE     L8044
 
         JMP     L82FB
 
 .L8044
-        CMP     #$09
+        CMP     #service_help
         BNE     L804B
 
         JMP     L8349
 
 .L804B
-        CMP     #$04
+        CMP     #service_unrecognised_oscli
         BNE     L8052
 
         JMP     L8167
