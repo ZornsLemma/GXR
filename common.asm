@@ -6845,7 +6845,8 @@ LAD50 = LAD4F + 1
         EQUW    LB016
         EQUW    LB064
         EQUW    LB0C2
-        EQUB    $07,$B1,$AB
+        EQUW    LB107
+        EQUB    $AB
         EQUB    $B3,$21,$B4,$B4,$B3,$6D,$B1,$AF
         EQUB    $B1,$DF,$B4,$BA,$B5,$ED,$B6,$43
         EQUB    $B7,$FC,$AD,$FC,$AD,$B7,$AD,$F6
@@ -7373,6 +7374,7 @@ LAD50 = LAD4F + 1
 
         JMP     LB142
 
+.LB107
         JSR     LA957
 
         SEC
