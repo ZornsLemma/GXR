@@ -91,6 +91,9 @@ elif ELECTRON
         fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
         setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
         selectRom = $E3A0
+else
+        unknown_machine
+endif
 
         ; The Electron has a different arrangement of zero page VDU variables
         ; compared to the BBC machines:
@@ -107,6 +110,30 @@ elif ELECTRON
         ; vduTempStoreDD                                $DD             $DB
         ; vduTempStoreDE                                $DE             $DC
         ; vduTempStoreDF                                $DF             $DD
+if BBC_B or BBC_B_PLUS
+        vduCurrentPlotByteMask = $D1
+        vduGraphicsColourByteOR = $D4
+        vduGraphicsColourByteEOR = $D5
+        vduScreenAddressOfGraphicsCursorCellLow = $D6
+        vduScreenAddressofGraphicsCursorCellHigh = $D7
+        vduTempStoreDA = $DA
+        vduTempStoreDB = $DB
+        vduTempStoreDC = $DC
+        vduTempStoreDD = $DD
+        vduTempStoreDE = $DE
+        vduTempStoreDF = $DF
+elif ELECTRON
+        vduCurrentPlotByteMask = $D1
+        vduGraphicsColourByteOR = $DE
+        vduGraphicsColourByteEOR = $DF
+        vduScreenAddressOfGraphicsCursorCellLow = $D4
+        vduScreenAddressofGraphicsCursorCellHigh = $D5
+        vduTempStoreDA = $D8
+        vduTempStoreDB = $D9
+        vduTempStoreDC = $DA
+        vduTempStoreDD = $DB
+        vduTempStoreDE = $DC
+        vduTempStoreDF = $DD
 else
         unknown_machine
 endif
@@ -119,17 +146,6 @@ L00AC   = $00AC
 L00AD   = $00AD
 L00AE   = $00AE
 L00AF   = $00AF
-L00D1   = $00D1
-L00D4   = $00D4
-L00D5   = $00D5
-L00D6   = $00D6
-L00D7   = $00D7
-L00DA   = $00DA
-L00DB   = $00DB
-L00DC   = $00DC
-L00DD   = $00DD
-L00DE   = $00DE
-L00DF   = $00DF
 L00EF   = $00EF
 L00F0   = $00F0
 L00F1   = $00F1
@@ -426,10 +442,10 @@ endif
 .L80A7
         LDY     #$50
         LDA     (L00F8),Y
-        STA     L00DC
+        STA     vduTempStoreDC
         INY
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         INY
         LDA     (L00F8),Y
         BEQ     L80BF
@@ -452,17 +468,17 @@ endif
         LDA     (L00F8),Y
         BEQ     L80E9
 
-        STA     L00DF
+        STA     vduTempStoreDF
         LDA     #$00
-        STA     L00DA
-        STA     L00DC
-        STA     L00DE
+        STA     vduTempStoreDA
+        STA     vduTempStoreDC
+        STA     vduTempStoreDE
         CLC
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         ADC     #$02
-        STA     L00DB
+        STA     vduTempStoreDB
         JSR     L8D9E
 
 .L80E9
@@ -553,10 +569,10 @@ endif
         JSR     L8943_set_f8_f9_to_private_workspace
 
         LDX     #$00
-        STX     L00DC
-        STY     L00DA
+        STX     vduTempStoreDC
+        STY     vduTempStoreDA
 .L8173
-        LDY     L00DA
+        LDY     vduTempStoreDA
         JSR     L8294
 
         BEQ     L818C
@@ -566,7 +582,7 @@ endif
         LDA     L820A,X
         BNE     L817A
 
-        INC     L00DC
+        INC     vduTempStoreDC
         INX
         LDA     L820A,X
         BNE     L8173
@@ -581,7 +597,7 @@ endif
         CMP     #$20
         BEQ     L818B
 
-        ASL     L00DC
+        ASL     vduTempStoreDC
         BEQ     L819D
 
         LDX     L00F4
@@ -589,18 +605,18 @@ endif
         BEQ     L8188
 
 .L819D
-        LDX     L00DC
+        LDX     vduTempStoreDC
         CPX     #$0A
         BCC     L81B9
 
-        STY     L00DD
+        STY     vduTempStoreDD
         JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$4A
         LDA     (L00F8),Y
         BEQ     L81DD
 
-        LDY     L00DD
+        LDY     vduTempStoreDD
         CPX     #$18
         BCC     L81B9
 
@@ -608,11 +624,11 @@ endif
         BEQ     L81F2
 
 .L81B9
-        LDX     L00DC
+        LDX     vduTempStoreDC
         LDA     L8278,X
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L8279,X
-        STA     L00DB
+        STA     vduTempStoreDB
         CLC
         TYA
         ADC     L00F2
@@ -632,7 +648,7 @@ endif
         RTS
 
 .L81DA
-        JMP     (L00DA)
+        JMP     (vduTempStoreDA)
 
 .L81DD
         JSR     generate_error
@@ -754,18 +770,18 @@ endif
 .L82DC
         LDY     #$4C
         LDA     (L00F8),Y
-        STA     L00DA
+        STA     vduTempStoreDA
         INY
         LDA     (L00F8),Y
-        STA     L00DB
-        ORA     L00DA
+        STA     vduTempStoreDB
+        ORA     vduTempStoreDA
         BEQ     L82AE
 
         LDY     #$00
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         TAX
         INY
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         TAY
         INX
         INY
@@ -960,8 +976,8 @@ endif
 
         JSR     LB804
 
-        LDA     L00DE
-        LDX     L00DF
+        LDA     vduTempStoreDE
+        LDX     vduTempStoreDF
         JSR     LB98C
 
         JSR     print_inline_counted
@@ -1018,15 +1034,15 @@ endif
         EQUS    "filename",$0D,$00
 
 .L88C8
-        STX     L00DA
-        STY     L00DB
+        STX     vduTempStoreDA
+        STY     vduTempStoreDB
         LDY     #$00
 .L88CE
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
-        LDA     L00DB
+        LDA     vduTempStoreDB
         PHA
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         CMP     #$0D
         BNE     L88E8
 
@@ -1043,12 +1059,12 @@ endif
         JSR     oswrch
 
         PLA
-        STA     L00DB
+        STA     vduTempStoreDB
         PLA
-        STA     L00DA
+        STA     vduTempStoreDA
         JSR     LB7A3
 
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         BNE     L88CE
 
         RTS
@@ -1293,19 +1309,19 @@ endif
         SEC
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         SBC     #$02
         STA     (L00F8),Y
-        STA     L00DB
+        STA     vduTempStoreDB
         LDY     #$4A
         LDA     (L00F8),Y
         BEQ     L89DA
 
-        STA     L00DF
+        STA     vduTempStoreDF
         LDA     #$00
-        STA     L00DA
-        STA     L00DC
-        STA     L00DE
+        STA     vduTempStoreDA
+        STA     vduTempStoreDC
+        STA     vduTempStoreDE
         JSR     L8D83
 
         JMP     L89DA
@@ -1323,7 +1339,7 @@ endif
         LDA     #$80
         ROL     A
         ROL     A
-        ADC     L00DE
+        ADC     vduTempStoreDE
         DEY
         STA     (L00F8),Y
         PLP
@@ -1348,13 +1364,13 @@ endif
 
 .generate_error
         PLA
-        STA     L00DA
+        STA     vduTempStoreDA
         PLA
-        STA     L00DB
+        STA     vduTempStoreDB
         LDY     #$00
 .L8A7C
         INY
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         STA     L0100,Y
         BNE     L8A7C
 
@@ -1399,14 +1415,14 @@ L8A89 = L8A87+2
         STA     L0317
         LDY     #$14
 .L8B3A
-        STY     L00DE
+        STY     vduTempStoreDE
         LDA     L0302,X
         EOR     #$07
         AND     #$07
         TAY
         JSR     L8B5D
 
-        LDY     L00DE
+        LDY     vduTempStoreDE
         JMP     fillRow
 
 .L8B4C
@@ -1432,11 +1448,11 @@ L8A89 = L8A87+2
         PHA
         ORA     L00A8
         EOR     L00A9
-        STA     L00D4
+        STA     vduGraphicsColourByteOR
         PLA
         ORA     L00AA
         EOR     L00AB
-        STA     L00D5
+        STA     vduGraphicsColourByteEOR
         LDA     #$00
         RTS
 
@@ -1583,12 +1599,12 @@ L8B72 = L8B71 + 1
         LSR     A
         TAX
         LDA     L8B71,X
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L8B72,X
-        STA     L00DB
+        STA     vduTempStoreDB
         JSR     L8943_set_f8_f9_to_private_workspace
 
-        JMP     (L00DA)
+        JMP     (vduTempStoreDA)
 
 .L8C6F_restore_saved_cursors_and_udgs
         LDX     #$03
@@ -1761,10 +1777,10 @@ L8B72 = L8B71 + 1
 .L8D3B
         LDA     L031C,X
         AND     L0360
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L0360
         AND     #$07
-        ADC     L00DA
+        ADC     vduTempStoreDA
         TAY
         LDA     twoColourMODEParameterTable - 1,Y
         STA     L031C,X
@@ -1777,7 +1793,7 @@ L8B72 = L8B71 + 1
 
         LDA     #$33
 .L8D5D
-        STA     L00DA
+        STA     vduTempStoreDA
         PLA
         CLC
         ADC     #$6C
@@ -1787,7 +1803,7 @@ L8B72 = L8B71 + 1
         LDA     L031C,X
         DEX
         EOR     L031C,X
-        AND     L00DA
+        AND     vduTempStoreDA
         EOR     L031C,X
         STA     (L00F8),Y
         INY
@@ -1808,54 +1824,54 @@ L8B72 = L8B71 + 1
 .L8D83
         LDY     #$00
 .L8D85
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         JSR     LB7A3
 
         JSR     LB7AA
 
-        LDA     L00DE
+        LDA     vduTempStoreDE
         BNE     L8D95
 
-        DEC     L00DF
+        DEC     vduTempStoreDF
 .L8D95
-        DEC     L00DE
-        LDA     L00DE
-        ORA     L00DF
+        DEC     vduTempStoreDE
+        LDA     vduTempStoreDE
+        ORA     vduTempStoreDF
         BNE     L8D85
 
         RTS
 
 .L8D9E
         CLC
-        LDA     L00DE
-        ADC     L00DA
-        STA     L00DA
-        LDA     L00DF
-        ADC     L00DB
-        STA     L00DB
-        LDA     L00DE
-        ADC     L00DC
-        STA     L00DC
-        LDA     L00DF
-        ADC     L00DD
-        STA     L00DD
+        LDA     vduTempStoreDE
+        ADC     vduTempStoreDA
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDF
+        ADC     vduTempStoreDB
+        STA     vduTempStoreDB
+        LDA     vduTempStoreDE
+        ADC     vduTempStoreDC
+        STA     vduTempStoreDC
+        LDA     vduTempStoreDF
+        ADC     vduTempStoreDD
+        STA     vduTempStoreDD
         LDY     #$00
 .L8DB9
         JSR     LB7B1
 
         JSR     LB7BA
 
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
-        LDA     L00DE
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
+        LDA     vduTempStoreDE
         BNE     L8DC9
 
-        DEC     L00DF
+        DEC     vduTempStoreDF
 .L8DC9
-        DEC     L00DE
-        LDA     L00DE
-        ORA     L00DF
+        DEC     vduTempStoreDE
+        LDA     vduTempStoreDE
+        ORA     vduTempStoreDF
         BNE     L8DB9
 
         RTS
@@ -2084,7 +2100,7 @@ L8B72 = L8B71 + 1
 
         LDY     L0C14
 .L8F47
-        STY     L00DB
+        STY     vduTempStoreDB
 .L8F49
         LDA     L0302,Y
         CMP     L032E
@@ -2137,7 +2153,7 @@ L8B72 = L8B71 + 1
         INY
         BNE     L8F95
 
-        LDY     L00DB
+        LDY     vduTempStoreDB
         JMP     L8F49
 
 .L8FA4
@@ -2145,11 +2161,11 @@ L8B72 = L8B71 + 1
         LDX     L0C14
         JSR     L8FB3
 
-        LDY     L00DB
+        LDY     vduTempStoreDB
         LDA     #$3F
         LDX     L0C15
 .L8FB3
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     L0302,X
         CMP     L0302,Y
         BNE     L8FC5
@@ -2159,7 +2175,7 @@ L8B72 = L8B71 + 1
         BEQ     L8FE2
 
 .L8FC5
-        LDX     L00DE
+        LDX     vduTempStoreDE
         JMP     L8FDD
 
 .L8FCA
@@ -2208,12 +2224,12 @@ L8B72 = L8B71 + 1
         SEC
         LDA     L0302,Y
         SBC     L0302,X
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     L0303,Y
         SBC     L0303,X
         BMI     L903B
 
-        ORA     L00DE
+        ORA     vduTempStoreDE
         BNE     L9043
 
 .L902D
@@ -2330,8 +2346,8 @@ L8B72 = L8B71 + 1
         JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .L90DC
-        STX     L00DE
-        STY     L00DF
+        STX     vduTempStoreDE
+        STY     vduTempStoreDF
         SEC
         LDA     L0300,X
         SBC     L0300,Y
@@ -2357,8 +2373,8 @@ L8B72 = L8B71 + 1
         DEX
         BPL     L910B
 
-        LDX     L00DE
-        LDY     L00DF
+        LDX     vduTempStoreDE
+        LDY     vduTempStoreDF
         SEC
         LDA     L0302,X
         SBC     L0302,Y
@@ -3404,12 +3420,12 @@ L8B72 = L8B71 + 1
         BEQ     L97FC
 
 .L97EE
-        STX     L00DE
-        STY     L00DF
+        STX     vduTempStoreDE
+        STY     vduTempStoreDF
         JSR     L992F
 
-        LDX     L00DE
-        LDY     L00DF
+        LDX     vduTempStoreDE
+        LDY     vduTempStoreDF
         JMP     L97B5
 
 .L97FC
@@ -3443,12 +3459,12 @@ L8B72 = L8B71 + 1
         ROL     A
         BCS     L9830
 
-        STX     L00DE
-        STY     L00DF
+        STX     vduTempStoreDE
+        STY     vduTempStoreDF
         JSR     L992F
 
-        LDX     L00DE
-        LDY     L00DF
+        LDX     vduTempStoreDE
+        LDY     vduTempStoreDF
         JMP     L9804
 
 .L9830
@@ -3669,7 +3685,7 @@ L8B72 = L8B71 + 1
         ASL     A
         LDA     L030A,X
         ROR     A
-        STA     L00DA
+        STA     vduTempStoreDA
         CLC
         BPL     L99A2
 
@@ -3726,7 +3742,7 @@ L8B72 = L8B71 + 1
 .L99DF
         CLC
         LDA     L030A,X
-        STA     L00DA
+        STA     vduTempStoreDA
         BPL     L99F7
 
         LDA     L0302,X
@@ -3748,24 +3764,24 @@ L8B72 = L8B71 + 1
         JMP     L9934
 
 .L9A0A
-        STY     L00DE
-        STA     L00DF
+        STY     vduTempStoreDE
+        STA     vduTempStoreDF
         LDA     L0302,X
         LDY     L0303,X
-        ASL     L00DA
+        ASL     vduTempStoreDA
         BCS     L9A23
 
-        ADC     L00DE
+        ADC     vduTempStoreDE
         STA     L0302,X
         TYA
-        ADC     L00DF
+        ADC     vduTempStoreDF
         JMP     L9A2B
 
 .L9A23
-        SBC     L00DE
+        SBC     vduTempStoreDE
         STA     L0302,X
         TYA
-        SBC     L00DF
+        SBC     vduTempStoreDF
 .L9A2B
         STA     L0303,X
         LDA     L0309,X
@@ -3777,28 +3793,28 @@ L8B72 = L8B71 + 1
         SEC
         SBC     #$01
 .L9A3A
-        STA     L00DC
+        STA     vduTempStoreDC
         LSR     A
-        STA     L00DD
+        STA     vduTempStoreDD
         LDY     #$10
 .L9A41
-        LDA     L00DD
+        LDA     vduTempStoreDD
         ASL     A
         ROL     L0308,X
         ROL     L0309,X
-        ROL     L00DC
-        ROL     L00DD
-        ASL     L00DE
-        ROL     L00DF
+        ROL     vduTempStoreDC
+        ROL     vduTempStoreDD
+        ASL     vduTempStoreDE
+        ROL     vduTempStoreDF
         BCC     L9A6D
 
         CLC
-        LDA     L00DC
+        LDA     vduTempStoreDC
         ADC     L0304,X
-        STA     L00DC
-        LDA     L00DD
+        STA     vduTempStoreDC
+        LDA     vduTempStoreDD
         ADC     L0305,X
-        STA     L00DD
+        STA     vduTempStoreDD
         BCC     L9A6D
 
         INC     L0308,X
@@ -3817,36 +3833,36 @@ L8B72 = L8B71 + 1
         PLP
         BPL     L9A89
 
-        LDA     L00DC
+        LDA     vduTempStoreDC
         STA     L0308,X
-        LDA     L00DD
+        LDA     vduTempStoreDD
         STA     L0309,X
         RTS
 
 .L9A89
         LDY     #$10
 .L9A8B
-        ROL     L00DC
-        ROL     L00DD
+        ROL     vduTempStoreDC
+        ROL     vduTempStoreDD
         ROL     L0308,X
         ROL     L0309,X
         SEC
         LDA     L0308,X
         SBC     L0306,X
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     L0309,X
         SBC     L0307,X
         BCC     L9AAE
 
         STA     L0309,X
-        LDA     L00DE
+        LDA     vduTempStoreDE
         STA     L0308,X
 .L9AAE
         DEY
         BNE     L9A8B
 
-        ROL     L00DC
-        ROL     L00DD
+        ROL     vduTempStoreDC
+        ROL     vduTempStoreDD
         SEC
         LDA     L0308,X
         SBC     L0306,X
@@ -3856,22 +3872,22 @@ L8B72 = L8B71 + 1
         STA     L0309,X
         LDA     L0300,X
         LDY     L0301,X
-        ASL     L00DA
+        ASL     vduTempStoreDA
         BCS     L9ADE
 
         SEC
-        ADC     L00DC
+        ADC     vduTempStoreDC
         STA     L0300,X
         TYA
-        ADC     L00DD
+        ADC     vduTempStoreDD
         JMP     L9AE7
 
 .L9ADE
         CLC
-        SBC     L00DC
+        SBC     vduTempStoreDC
         STA     L0300,X
         TYA
-        SBC     L00DD
+        SBC     vduTempStoreDD
 .L9AE7
         STA     L0301,X
 .L9AEA
@@ -3890,7 +3906,7 @@ L8B72 = L8B71 + 1
 .L9AFA
         ASL     A
         ASL     A
-        STA     L00DB
+        STA     vduTempStoreDB
         AND     #$C0
         EOR     #$40
         BNE     L9B14
@@ -3905,12 +3921,12 @@ L8B72 = L8B71 + 1
         LDX     #$24
         JSR     checkPointXIsWithinGraphicsWindow
 
-        STA     L00DC
+        STA     vduTempStoreDC
         BEQ     L9B23
 
         LDA     #$7F
-        AND     L00DB
-        STA     L00DB
+        AND     vduTempStoreDB
+        STA     vduTempStoreDB
 .L9B23
         LDX     #$20
         JSR     checkPointXIsWithinGraphicsWindow
@@ -3920,10 +3936,10 @@ L8B72 = L8B71 + 1
 
         TAX
         LDA     #$DF
-        AND     L00DB
-        STA     L00DB
+        AND     vduTempStoreDB
+        STA     vduTempStoreDB
         TXA
-        BIT     L00DC
+        BIT     vduTempStoreDC
 .L9B37
         BNE     L9AEA
 
@@ -3933,10 +3949,10 @@ L8B72 = L8B71 + 1
         LDX     #$28
         JSR     L9872
 
-        LDA     L00DC
+        LDA     vduTempStoreDC
         AND     #$0C
         PHP
-        LDA     L00DC
+        LDA     vduTempStoreDC
         PLP
         BEQ     L9B5B
 
@@ -3991,7 +4007,7 @@ L8B72 = L8B71 + 1
         ADC     #$00
         EOR     #$FF
 .L9B99
-        STA     L00DC
+        STA     vduTempStoreDC
         CLC
         LDA     L0300,Y
         SBC     L0328
@@ -4013,26 +4029,26 @@ L8B72 = L8B71 + 1
         TAX
         TYA
 .L9BB9
-        STA     L00DD
+        STA     vduTempStoreDD
         STX     L0C14
         LDX     #$28
         JSR     L8B5A
 
-        ASL     L00DB
+        ASL     vduTempStoreDB
         BCS     L9C1E
 
 .L9BC7
-        BIT     L00DB
+        BIT     vduTempStoreDB
         BVC     L9BD9
 
         LDA     L0C14
-        AND     L00DC
-        AND     L00DD
+        AND     vduTempStoreDC
+        AND     vduTempStoreDD
         CLC
         ADC     #$01
         BEQ     L9C35
 
-        BIT     L00DB
+        BIT     vduTempStoreDB
 .L9BD9
         BPL     L9C0E
 
@@ -4063,14 +4079,14 @@ L8B72 = L8B71 + 1
 
 .L9C0E
 if BBC_B or ELECTRON
-        LDA     L00D1
-        AND     L00D4
-        ORA     (L00D6),Y
-        STA     L00DA
-        LDA     L00D1
-        AND     L00D5
-        EOR     L00DA
-        STA     (L00D6),Y
+        LDA     vduCurrentPlotByteMask
+        AND     vduGraphicsColourByteOR
+        ORA     (vduScreenAddressOfGraphicsCursorCellLow),Y
+        STA     vduTempStoreDA
+        LDA     vduCurrentPlotByteMask
+        AND     vduGraphicsColourByteEOR
+        EOR     vduTempStoreDA
+        STA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
         JSR     plotPointWithinBoundsAtY
 else
@@ -4080,7 +4096,7 @@ endif
         LDA     L0331
         BPL     L9C59
 
-        INC     L00DC
+        INC     vduTempStoreDC
         BEQ     L9C35
 
         BIT     L0332
@@ -4121,14 +4137,14 @@ endif
         INC     L0C14
         BNE     L9C62
 
-        INC     L00DD
+        INC     vduTempStoreDD
         BEQ     L9C35
 
 .L9C62
         BIT     L0332
         BVS     L9C71
 
-        LSR     L00D1
+        LSR     vduCurrentPlotByteMask
         BCC     L9C78
 
         JSR     moveGraphicsCursorAddressTotheRightAndUpdateMask
@@ -4136,7 +4152,7 @@ endif
         JMP     L9C78
 
 .L9C71
-        ASL     L00D1
+        ASL     vduCurrentPlotByteMask
         BCC     L9C78
 
         JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
@@ -4183,17 +4199,17 @@ endif
 
 .L9CB3
         CLC
-        LDA     L00D6
+        LDA     vduScreenAddressOfGraphicsCursorCellLow
         ADC     L0352
-        STA     L00D6
-        LDA     L00D7
+        STA     vduScreenAddressOfGraphicsCursorCellLow
+        LDA     vduScreenAddressofGraphicsCursorCellHigh
         ADC     L0353
         BPL     L9CC6
 
         SEC
         SBC     L0354
 .L9CC6
-        STA     L00D7
+        STA     vduScreenAddressofGraphicsCursorCellHigh
         LDY     #$00
         RTS
 
@@ -4301,27 +4317,27 @@ endif
         STA     L032E
         TAY
         LDA     L00F9
-        STA     L00DD
-        INC     L00DD
+        STA     vduTempStoreDD
+        INC     vduTempStoreDD
         LDA     #$00
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L0314
-        STA     (L00DC),Y
-        INC     L00DD
+        STA     (vduTempStoreDC),Y
+        INC     vduTempStoreDD
         LDA     L0324
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         LDA     #$80
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L0325
         ASL     A
         ASL     A
         ASL     A
         ASL     A
         ORA     L0315
-        STA     (L00DC),Y
-        DEC     L00DD
+        STA     (vduTempStoreDC),Y
+        DEC     vduTempStoreDD
         LDA     L0316
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         SEC
         RTS
 
@@ -4336,28 +4352,28 @@ endif
         STA     L032D
         TAY
         LDA     L00F9
-        STA     L00DD
-        INC     L00DD
+        STA     vduTempStoreDD
+        INC     vduTempStoreDD
         LDA     #$00
-        STA     L00DC
-        LDA     (L00DC),Y
+        STA     vduTempStoreDC
+        LDA     (vduTempStoreDC),Y
         STA     L0328
-        INC     L00DD
-        LDA     (L00DC),Y
+        INC     vduTempStoreDD
+        LDA     (vduTempStoreDC),Y
         STA     L032B
         LDA     #$80
-        STA     L00DC
-        LDA     (L00DC),Y
+        STA     vduTempStoreDC
+        LDA     (vduTempStoreDC),Y
         LSR     A
         LSR     A
         LSR     A
         LSR     A
         STA     L032C
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         AND     #$0F
         STA     L0329
-        DEC     L00DD
-        LDA     (L00DC),Y
+        DEC     vduTempStoreDD
+        LDA     (vduTempStoreDC),Y
         STA     L032A
         RTS
 
@@ -4391,7 +4407,7 @@ endif
 
         BNE     L9E34
 
-        LDA     L00D1
+        LDA     vduCurrentPlotByteMask
         ORA     L032F
 .L9E03
         STA     L032F
@@ -4410,7 +4426,7 @@ endif
         DEC     L0315
 .L9E1E
         DEC     L0314
-        ASL     L00D1
+        ASL     vduCurrentPlotByteMask
         BCC     L9DF9
 
         JSR     L9E8E
@@ -4443,7 +4459,7 @@ endif
 
         BNE     L9E83
 
-        LDA     L00D1
+        LDA     vduCurrentPlotByteMask
         ORA     L032F
         STA     L032F
         LDA     L0325
@@ -4460,7 +4476,7 @@ endif
 
         INC     L0325
 .L9E70
-        LSR     L00D1
+        LSR     vduCurrentPlotByteMask
         BCC     L9E4B
 
         JSR     L9E8E
@@ -4482,19 +4498,19 @@ endif
 .L9E8E
 if BBC_B or ELECTRON
         LDA     L032F
-        AND     L00D4
-        ORA     (L00D6),Y
-        STA     L00DA
-        LDA     L00D5
+        AND     vduGraphicsColourByteOR
+        ORA     (vduScreenAddressOfGraphicsCursorCellLow),Y
+        STA     vduTempStoreDA
+        LDA     vduGraphicsColourByteEOR
         AND     L032F
-        EOR     L00DA
-        STA     (L00D6),Y
+        EOR     vduTempStoreDA
+        STA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
-        LDX     L00D1
+        LDX     vduCurrentPlotByteMask
         LDA     L032F
-        STA     L00D1
+        STA     vduCurrentPlotByteMask
         JSR     plotPointWithinBoundsAtY
-        STX     L00D1
+        STX     vduCurrentPlotByteMask
 else
         unknown_machine
 endif
@@ -4531,7 +4547,7 @@ endif
 
         INC     L0321
 .L9ED3
-        LSR     L00D1
+        LSR     vduCurrentPlotByteMask
         BCC     L9EB6
 
         JSR     moveGraphicsCursorAddressTotheRightAndUpdateMask
@@ -4589,7 +4605,7 @@ endif
 .L9F24
         LDY     L031A
 if BBC_B or ELECTRON
-        LDA     (L00D6),Y
+        LDA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
         EOR     L035A ; undo the unwanted eor from subroutine call
@@ -4597,7 +4613,7 @@ else
         unknown_machine
 endif
         EOR     L0C17,Y
-        AND     L00D1
+        AND     vduCurrentPlotByteMask
         BEQ     L9F32
 
         LDA     #$01
@@ -4658,14 +4674,14 @@ endif
         LDY     #$02
 .L9F7E
         LDA     #$00
-        STA     L00DA
+        STA     vduTempStoreDA
         DEX
         DEX
         JSR     checkPointIsWithinWindowHorizontalOrVertical
 
         INX
         INX
-        LDA     L00DA
+        LDA     vduTempStoreDA
         RTS
 
 .L9F8C
@@ -4702,7 +4718,7 @@ endif
         LDX     #$20
         JSR     copyFourBytesWithinVDUVariables
 
-        STY     L00DA
+        STY     vduTempStoreDA
         LDX     #$34
         LDY     #$2C
         LDA     #$28
@@ -4736,12 +4752,12 @@ endif
 .L9FF5
         PLA
         LDY     #$30
-        STY     L00DA
+        STY     vduTempStoreDA
         LDY     #$28
         JSR     LA1D0
 
         LDY     #$3C
-        STY     L00DA
+        STY     vduTempStoreDA
         LDY     #$34
         JSR     LA1D0
 
@@ -4762,7 +4778,7 @@ endif
 .LA01A
         PLA
         LDY     #$40
-        STY     L00DA
+        STY     vduTempStoreDA
         LDY     #$38
         JSR     LA1D0
 
@@ -4789,11 +4805,11 @@ endif
         STA     L0347
         LDA     L0330
         AND     L0361
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L033C
         AND     L0361
         SEC
-        SBC     L00DA
+        SBC     vduTempStoreDA
         BPL     LA062
 
         DEC     L0347
@@ -4817,9 +4833,9 @@ endif
         JSR     LA210
 
         STA     L0344
-        LDA     L00D1
+        LDA     vduCurrentPlotByteMask
         STA     L0346
-        LDA     L00DC
+        LDA     vduTempStoreDC
         STA     L0C14
         LDX     #$00
         JSR     LA1B3
@@ -4918,18 +4934,18 @@ endif
         BMI     LA123
 
         SEC
-        LDA     L00D6
+        LDA     vduScreenAddressOfGraphicsCursorCellLow
         SBC     #$08
-        STA     L00D6
+        STA     vduScreenAddressOfGraphicsCursorCellLow
         BCS     LA123
 
-        DEC     L00D7
+        DEC     vduScreenAddressofGraphicsCursorCellHigh
 .LA123
         LDA     L0344
-        STA     L00DD
+        STA     vduTempStoreDD
 .LA128
 if BBC_B or ELECTRON
-        LDA     (L00D6),Y
+        LDA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
         EOR     L035A ; undo the unwanted eor from subroutine call
@@ -4945,18 +4961,18 @@ endif
         BNE     LA12F
 
 .LA133
-        STA     L00DA
+        STA     vduTempStoreDA
         SEC
         JSR     moveGraphicsCursorAddressTotheRight
 
 if BBC_B or ELECTRON
-        LDA     (L00D6),Y
+        LDA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
-        LDX     L00DA
+        LDX     vduTempStoreDA
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
         EOR     L035A ; undo the unwanted eor from subroutine call
-        STX     L00DA ; undo the unwanted sta from subroutine call
+        STX     vduTempStoreDA ; undo the unwanted sta from subroutine call
 else
         unknown_machine
 endif
@@ -4969,12 +4985,12 @@ endif
         BNE     LA140
 
 .LA144
-        EOR     L00DA
+        EOR     vduTempStoreDA
         AND     L0C15
-        EOR     L00DA
-        LDX     L00DD
+        EOR     vduTempStoreDA
+        LDX     vduTempStoreDD
         STA     L0C17,X
-        DEC     L00DD
+        DEC     vduTempStoreDD
         BPL     LA128
 
         LDX     #$34
@@ -4991,20 +5007,20 @@ endif
         JSR     L8B5A
 
         LDA     L0346
-        STA     L00DA
+        STA     vduTempStoreDA
         LDX     L0344
         BEQ     LA188
 
         JSR     LA191
 
         LDA     #$FF
-        STA     L00DA
+        STA     vduTempStoreDA
         JMP     LA181
 
 .LA17C
         LDA     L0C17,X
 if BBC_B or ELECTRON
-        STA     (L00D6),Y
+        STA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
         JSR     b_plus_sta_d6_indirect_y
 else
@@ -5020,26 +5036,26 @@ endif
 .LA188
         LDA     L0C14
         EOR     #$FF
-        AND     L00DA
-        STA     L00DA
+        AND     vduTempStoreDA
+        STA     vduTempStoreDA
 .LA191
 if BBC_B or ELECTRON
         LDA     L0C17,X
-        EOR     (L00D6),Y
-        AND     L00DA
-        EOR     (L00D6),Y
-        STA     (L00D6),Y
+        EOR     (vduScreenAddressOfGraphicsCursorCellLow),Y
+        AND     vduTempStoreDA
+        EOR     (vduScreenAddressOfGraphicsCursorCellLow),Y
+        STA     (vduScreenAddressOfGraphicsCursorCellLow),Y
         RTS
 elif BBC_B_PLUS
-        LDA     L00DA ; stash value at &DA which subroutine call will corrupt
-        STA     L00DB
+        LDA     vduTempStoreDA ; stash value at &DA which subroutine call will corrupt
+        STA     vduTempStoreDB
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
         EOR     L035A ; undo the unwanted eor from subroutine call
-        STA     L00DA ; set &DA to (&D6),Y
+        STA     vduTempStoreDA ; set &DA to (&D6),Y
         EOR     L0C17,X
-        AND     L00DB
-        EOR     L00DA
+        AND     vduTempStoreDB
+        EOR     vduTempStoreDA
         JMP     b_plus_sta_d6_indirect_y
 else
         unknown_machine
@@ -5078,8 +5094,8 @@ endif
         INX
         CLC
         ADC     #$02
-        INC     L00DA
-        INC     L00DA
+        INC     vduTempStoreDA
+        INC     vduTempStoreDA
 .LA1D0
         STA     L0C16
         TXA
@@ -5091,7 +5107,7 @@ endif
         CLC
         LDA     L0300,X
         ADC     L0300,Y
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     L0301,X
         ADC     L0301,Y
         STA     L0C16
@@ -5099,9 +5115,9 @@ endif
         TAX
         LDA     L0C16
         PHA
-        LDY     L00DA
+        LDY     vduTempStoreDA
         SEC
-        LDA     L00DE
+        LDA     vduTempStoreDE
         SBC     L0300,X
         STA     L0300,Y
         PLA
@@ -5126,13 +5142,13 @@ endif
         TAY
         LDA     sixteenColourMODEMaskTable - 1,Y
         EOR     L8A89,Y
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L0300,X
         AND     L0361
         ADC     L0361
         TAY
         LDA     L8A89,Y
-        STA     L00D1
+        STA     vduCurrentPlotByteMask
         SEC
         PLA
         ORA     L0361
@@ -5140,7 +5156,7 @@ endif
         TAY
         PLA
         SBC     L0301,X
-        STA     L00DD
+        STA     vduTempStoreDD
         TYA
         LDY     L0361
         CPY     #$03
@@ -5148,10 +5164,10 @@ endif
 
         BCC     LA256
 
-        LSR     L00DD
+        LSR     vduTempStoreDD
         ROR     A
 .LA253
-        LSR     L00DD
+        LSR     vduTempStoreDD
         ROR     A
 .LA256
         LSR     A
@@ -5212,7 +5228,7 @@ endif
         LDY     #$34
         JSR     copyFourBytesWithinVDUVariables
 
-        STY     L00DA
+        STY     vduTempStoreDA
         LDA     L0361
         EOR     #$FF
         AND     L0334
@@ -5234,19 +5250,19 @@ endif
         JMP     L8C6F_restore_saved_cursors_and_udgs
 
 .LA2DD
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
         AND     #$01
         BEQ     LA2F6
 
         LDX     #$00
         LDY     #$2C
-        STY     L00DA
+        STY     vduTempStoreDA
         LDA     #$34
         JSR     LA1D0
 
         LDY     #$34
-        STY     L00DA
+        STY     vduTempStoreDA
         JSR     LA1D0
 
 .LA2F6
@@ -5256,12 +5272,12 @@ endif
 
         LDX     #$02
         LDY     #$2E
-        STY     L00DA
+        STY     vduTempStoreDA
         LDA     #$36
         JSR     LA1D0
 
         LDY     #$36
-        STY     L00DA
+        STY     vduTempStoreDA
         JSR     LA1D0
 
 .LA30D
@@ -5273,19 +5289,19 @@ endif
         AND     #$05
         BNE     LA2DA
 
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
         AND     #$02
         BEQ     LA331
 
         LDX     #$04
         LDY     #$30
-        STY     L00DA
+        STY     vduTempStoreDA
         LDA     #$38
         JSR     LA1D0
 
         LDY     #$38
-        STY     L00DA
+        STY     vduTempStoreDA
         JSR     LA1D0
 
 .LA331
@@ -5295,12 +5311,12 @@ endif
 
         LDX     #$06
         LDY     #$32
-        STY     L00DA
+        STY     vduTempStoreDA
         LDA     #$3A
         JSR     LA1D0
 
         LDY     #$3A
-        STY     L00DA
+        STY     vduTempStoreDA
         JSR     LA1D0
 
 .LA348
@@ -5356,9 +5372,9 @@ endif
         STA     L032C
         INC     L032C
 .LA3A8
-        LDA     L00D6
+        LDA     vduScreenAddressOfGraphicsCursorCellLow
         PHA
-        LDA     L00D7
+        LDA     vduScreenAddressofGraphicsCursorCellHigh
         PHA
         LDA     L032A
         STA     L00F8
@@ -5371,17 +5387,17 @@ endif
         PHA
         ORA     L00AA
         EOR     L00AB
-        STA     L00D5
+        STA     vduGraphicsColourByteEOR
         PLA
         ORA     L00A8
         EOR     L00A9
         LDY     L031A
 if BBC_B or ELECTRON
-        ORA     (L00D6),Y
-        EOR     L00D5
-        STA     (L00D6),Y
+        ORA     (vduScreenAddressOfGraphicsCursorCellLow),Y
+        EOR     vduGraphicsColourByteEOR
+        STA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
-        STA     L00D4
+        STA     vduGraphicsColourByteOR
         JSR     b_plus_modify_d6_indirect_y_by_ora_d4_eor_d5
 else
         unknown_machine
@@ -5398,9 +5414,9 @@ endif
         BNE     LA3BB
 
         PLA
-        STA     L00D7
+        STA     vduScreenAddressofGraphicsCursorCellHigh
         PLA
-        STA     L00D6
+        STA     vduScreenAddressOfGraphicsCursorCellLow
         SEC
         LDA     L032A
         ADC     L0328
@@ -5470,7 +5486,7 @@ endif
         AND     #$0A
         BNE     LA42B
 
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
         AND     #$01
         BEQ     LA452
@@ -5497,7 +5513,7 @@ endif
         AND     #$05
         BNE     LA42B
 
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
         AND     #$02
         BEQ     LA477
@@ -5549,9 +5565,9 @@ endif
         JSR     LB8D4
 
         CLC
-        LDA     L00DE
+        LDA     vduTempStoreDE
         STA     L032A
-        LDA     L00DF
+        LDA     vduTempStoreDF
         STA     L032B
         JSR     LB804
 
@@ -5563,29 +5579,29 @@ endif
 
         CLC
         LDY     #$02
-        LDA     (L00DC),Y
-        ADC     L00DE
-        STA     L00DE
+        LDA     (vduTempStoreDC),Y
+        ADC     vduTempStoreDE
+        STA     vduTempStoreDE
         INY
-        LDA     (L00DC),Y
-        ADC     L00DF
-        STA     L00DF
+        LDA     (vduTempStoreDC),Y
+        ADC     vduTempStoreDF
+        STA     vduTempStoreDF
         LDA     #$06
-        ADC     L00DE
-        STA     L00DE
+        ADC     vduTempStoreDE
+        STA     vduTempStoreDE
         BCC     LA4EF
 
-        INC     L00DF
+        INC     vduTempStoreDF
 .LA4EF
         SEC
-        LDA     L00DE
+        LDA     vduTempStoreDE
         SBC     #$06
         BCS     LA4F8
 
-        DEC     L00DF
+        DEC     vduTempStoreDF
 .LA4F8
         CMP     L032A
-        LDA     L00DF
+        LDA     vduTempStoreDF
         SBC     L032B
         BMI     LA574
 
@@ -5594,27 +5610,27 @@ endif
         JSR     LAAB6
 
         CLC
-        LDA     L00DA
-        STA     L00DC
+        LDA     vduTempStoreDA
+        STA     vduTempStoreDC
         ADC     #$06
-        STA     L00DA
-        LDA     L00DB
-        STA     L00DD
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDB
+        STA     vduTempStoreDD
         BCC     LA518
 
-        INC     L00DB
+        INC     vduTempStoreDB
 .LA518
         LDY     #$05
         PLA
         PHA
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         DEY
         LDA     vduCurrentScreenMODE
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         DEY
 .LA525
         LDA     L0328,Y
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         DEY
         BPL     LA525
 
@@ -5622,33 +5638,33 @@ endif
         INC     L0329
 .LA533
         LDX     L0328
-        LDA     L00D6
+        LDA     vduScreenAddressOfGraphicsCursorCellLow
         PHA
-        LDA     L00D7
+        LDA     vduScreenAddressofGraphicsCursorCellHigh
         PHA
 .LA53C
         LDY     L031A
 if BBC_B or ELECTRON
-        LDA     (L00D6),Y
+        LDA     (vduScreenAddressOfGraphicsCursorCellLow),Y
 elif BBC_B_PLUS
-        LDA     L00DA ; stash value at &DA which subroutine call will corrupt
+        LDA     vduTempStoreDA ; stash value at &DA which subroutine call will corrupt
         PHA
         JSR     b_plus_lda_d6_indirect_y_eor_35a_sta_da
 
         EOR     L035A ; undo the unwanted eor from subroutine call
         TAY           ; restore &DA, preserving A
         PLA
-        STA     L00DA
+        STA     vduTempStoreDA
         TYA
 else
         unknown_machine
 endif
         LDY     #$00
-        STA     (L00DA),Y
-        INC     L00DA
+        STA     (vduTempStoreDA),Y
+        INC     vduTempStoreDA
         BNE     LA54B
 
-        INC     L00DB
+        INC     vduTempStoreDB
 .LA54B
         SEC
         JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
@@ -5657,9 +5673,9 @@ endif
         BNE     LA53C
 
         PLA
-        STA     L00D7
+        STA     vduScreenAddressofGraphicsCursorCellHigh
         PLA
-        STA     L00D6
+        STA     vduScreenAddressOfGraphicsCursorCellLow
         INC     L031A
         LDY     L031A
         CPY     #$08
@@ -5704,21 +5720,21 @@ endif
 
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DB
+        STA     vduTempStoreDB
         LDA     #$00
-        STA     L00DA
+        STA     vduTempStoreDA
         LDY     #$4B
         LDA     (L00F8),Y
         LDY     #$02
-        STA     (L00DA),Y
+        STA     (vduTempStoreDA),Y
         LDY     #$00
         SEC
-        LDA     L00DC
-        STA     (L00DA),Y
+        LDA     vduTempStoreDC
+        STA     (vduTempStoreDA),Y
         INY
-        LDA     L00DD
-        SBC     L00DB
-        STA     (L00DA),Y
+        LDA     vduTempStoreDD
+        SBC     vduTempStoreDB
+        STA     (vduTempStoreDA),Y
         LDY     #$64
         LDX     #$06
         LDA     #$FF
@@ -5732,7 +5748,7 @@ endif
         LDA     #$00
         STA     (L00F8),Y
         INY
-        LDA     L00DB
+        LDA     vduTempStoreDB
         STA     (L00F8),Y
         LDY     #$62
         STA     (L00F8),Y
@@ -5750,9 +5766,9 @@ endif
 
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DB
+        STA     vduTempStoreDB
         LDA     #$00
-        STA     L00DA
+        STA     vduTempStoreDA
         LDY     #$64
         LDX     #$06
         LDA     #$FF
@@ -5763,17 +5779,17 @@ endif
         BNE     LA611
 
         LDY     #$5D
-        LDA     L00DA
+        LDA     vduTempStoreDA
         STA     (L00F8),Y
         INY
-        LDA     L00DB
+        LDA     vduTempStoreDB
         LDY     #$5E
         STA     (L00F8),Y
         LDY     #$61
-        LDA     L00DC
+        LDA     vduTempStoreDC
         STA     (L00F8),Y
         INY
-        LDA     L00DD
+        LDA     vduTempStoreDD
         STA     (L00F8),Y
         LDX     #$53
         LDY     L00F9
@@ -5783,13 +5799,13 @@ endif
 .LA638
         JSR     LA72E
 
-        STX     L00DA
-        STY     L00DB
+        STX     vduTempStoreDA
+        STY     vduTempStoreDB
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         LDA     #$00
-        STA     L00DC
+        STA     vduTempStoreDC
         JSR     LA690
 
         BCS     LA655
@@ -5804,8 +5820,8 @@ endif
 .LA656
         JSR     LA72E
 
-        STX     L00DA
-        STY     L00DB
+        STX     vduTempStoreDA
+        STY     vduTempStoreDB
         JSR     LB804
 
         JSR     LA690
@@ -5814,12 +5830,12 @@ endif
 
         TAX
         CLC
-        LDA     L00DC
+        LDA     vduTempStoreDC
         ADC     #$03
-        STA     L00DC
+        STA     vduTempStoreDC
         BCC     LA671
 
-        INC     L00DD
+        INC     vduTempStoreDD
 .LA671
         TXA
         PHA
@@ -5840,16 +5856,16 @@ endif
 
 .LA690
         LDY     #$53
-        LDA     L00DA
+        LDA     vduTempStoreDA
         STA     (L00F8),Y
         INY
-        LDA     L00DB
+        LDA     vduTempStoreDB
         STA     (L00F8),Y
         INY
-        LDA     L00DC
+        LDA     vduTempStoreDC
         STA     (L00F8),Y
         INY
-        LDA     L00DD
+        LDA     vduTempStoreDD
         STA     (L00F8),Y
         INY
         LDA     #$FF
@@ -5860,13 +5876,13 @@ endif
         LDA     #$00
         STA     (L00F8),Y
         LDY     #$65
-        LDA     L00DC
+        LDA     vduTempStoreDC
         STA     (L00F8),Y
         INY
-        LDA     L00DD
+        LDA     vduTempStoreDD
         STA     (L00F8),Y
-        LDX     L00DA
-        LDY     L00DB
+        LDX     vduTempStoreDA
+        LDY     vduTempStoreDB
         LDA     #$40
         JSR     osfind
 
@@ -5886,23 +5902,23 @@ endif
         JSR     L8943_set_f8_f9_to_private_workspace
 
         PLA
-        STA     L00DD
+        STA     vduTempStoreDD
         PLA
-        STA     L00DC
+        STA     vduTempStoreDC
         CLC
         LDY     #$65
         LDA     (L00F8),Y
-        ADC     L00DC
-        STA     L00DC
+        ADC     vduTempStoreDC
+        STA     vduTempStoreDC
         INY
         LDA     (L00F8),Y
-        ADC     L00DD
-        STA     L00DD
+        ADC     vduTempStoreDD
+        STA     vduTempStoreDD
         LDY     #$4F
         LDA     #$00
-        CMP     L00DC
+        CMP     vduTempStoreDC
         LDA     (L00F8),Y
-        SBC     L00DD
+        SBC     vduTempStoreDD
         BCC     LA71A
 
         LDX     #$53
@@ -5914,12 +5930,12 @@ endif
 
         LDY     #$65
         LDA     (L00F8),Y
-        STA     L00DC
+        STA     vduTempStoreDC
         INY
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         LDY     #$02
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         CLC
         RTS
 
@@ -5982,7 +5998,7 @@ endif
         LDY     #$4C
         STA     (L00F8),Y
         INY
-        LDA     L00DD
+        LDA     vduTempStoreDD
         STA     (L00F8),Y
         CPX     #$00
         RTS
@@ -6005,8 +6021,8 @@ endif
         PHA
         JSR     LB835
 
-        STX     L00DE
-        STY     L00DF
+        STX     vduTempStoreDE
+        STY     vduTempStoreDF
         PLA
         PHA
         JSR     LB7C3
@@ -6014,12 +6030,12 @@ endif
         BEQ     LA7D6
 
         LDY     #$00
-        LDA     (L00DE),Y
+        LDA     (vduTempStoreDE),Y
         CMP     #$2C
         BNE     LA7D9
 
-        LDX     L00DE
-        LDY     L00DF
+        LDX     vduTempStoreDE
+        LDY     vduTempStoreDF
         INX
         BNE     LA7B9
 
@@ -6029,21 +6045,21 @@ endif
 
         PLA
         PHA
-        CMP     L00DE
+        CMP     vduTempStoreDE
         BEQ     LA7EB
 
-        LDA     L00DE
+        LDA     vduTempStoreDE
         PHA
         JSR     LAAB6
 
         PLA
-        STA     L00DE
+        STA     vduTempStoreDE
         PLA
         JSR     LB7C3
 
         LDY     #$05
-        LDA     L00DE
-        STA     (L00DC),Y
+        LDA     vduTempStoreDE
+        STA     (vduTempStoreDC),Y
         RTS
 
 .LA7D6
@@ -6360,21 +6376,21 @@ endif
         JSR     LB8D4
 
         CLC
-        LDA     L00DE
+        LDA     vduTempStoreDE
         ADC     L033C
-        LDX     L00DF
+        LDX     vduTempStoreDF
         BCC     LA9FB
 
         INX
 .LA9FB
         CLC
         ADC     L033F
-        STA     L00DE
+        STA     vduTempStoreDE
         BCC     LAA04
 
         INX
 .LAA04
-        STX     L00DF
+        STX     vduTempStoreDF
         CLC
         LDY     #$02
         LDA     (L00AC),Y
@@ -6392,10 +6408,10 @@ endif
         INX
 .LAA1B
         SEC
-        SBC     L00DE
+        SBC     vduTempStoreDE
         STA     L00AE
         TXA
-        SBC     L00DF
+        SBC     vduTempStoreDF
         STA     L00AF
         RTS
 
@@ -6459,8 +6475,8 @@ endif
 .LAA8F
         JSR     LB7A3
 
-        LDX     L00DA
-        LDY     L00DB
+        LDX     vduTempStoreDA
+        LDY     vduTempStoreDB
 .LAA96
         JSR     LB851
 
@@ -6468,7 +6484,7 @@ endif
         PHA
         TYA
         PHA
-        LDA     L00DE
+        LDA     vduTempStoreDE
         JSR     LAAB6
 
         PLA
@@ -6477,10 +6493,10 @@ endif
         TAX
         JSR     LB835
 
-        STX     L00DA
-        STY     L00DB
+        STX     vduTempStoreDA
+        STY     vduTempStoreDB
         LDY     #$00
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         CMP     #$2C
         BEQ     LAA8F
 
@@ -6489,8 +6505,8 @@ endif
 .LAAB6
         JSR     LB7C3
 
-        STA     L00DA
-        STY     L00DB
+        STA     vduTempStoreDA
+        STY     vduTempStoreDB
         CPX     #$00
         BEQ     LAAE9
 
@@ -6509,13 +6525,13 @@ endif
 .LAAD3
         CLC
         LDY     #$02
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$06
-        STA     L00DE
+        STA     vduTempStoreDE
         INY
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         JSR     L8D83
 
         DEX
@@ -6527,27 +6543,27 @@ endif
 .LAAEA
         JSR     L8943_set_f8_f9_to_private_workspace
 
-        LDA     L00DC
+        LDA     vduTempStoreDC
         PHA
-        LDA     L00DD
+        LDA     vduTempStoreDD
         PHA
         LDY     #$05
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         JSR     LAAB6
 
         PLA
-        STA     L00DD
+        STA     vduTempStoreDD
         PLA
-        STA     L00DC
+        STA     vduTempStoreDC
         CLC
         LDY     #$02
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$06
-        STA     L00DE
+        STA     vduTempStoreDE
         INY
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         JSR     L8D83
 
         CLC
@@ -6595,17 +6611,17 @@ endif
         STA     L032A
         JSR     LB835
 
-        STX     L00DA
-        STY     L00DB
+        STX     vduTempStoreDA
+        STY     vduTempStoreDB
         LDY     #$00
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         CMP     #$2C
         BNE     LAB82
 
         JSR     LB7A3
 
-        LDX     L00DA
-        LDY     L00DB
+        LDX     vduTempStoreDA
+        LDY     vduTempStoreDB
         JSR     LB851
 
         STA     L032A
@@ -6621,10 +6637,10 @@ endif
 
         JSR     LB804
 
-        LDA     L00DC
-        STA     L00DA
-        LDA     L00DD
-        STA     L00DB
+        LDA     vduTempStoreDC
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDD
+        STA     vduTempStoreDB
         LDA     L0329
         JSR     LB7C3
 
@@ -6641,37 +6657,37 @@ endif
         SBC     L032B
         STA     (L00F8),Y
         SEC
-        LDA     L00DA
-        SBC     L00DC
-        STA     L00DE
-        LDA     L00DB
-        SBC     L00DD
-        STA     L00DF
+        LDA     vduTempStoreDA
+        SBC     vduTempStoreDC
+        STA     vduTempStoreDE
+        LDA     vduTempStoreDB
+        SBC     vduTempStoreDD
+        STA     vduTempStoreDF
         JMP     LABF6
 
 .LABC8
         LDA     #lo(LAB53)
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     #hi(LAB53)
-        STA     L00DD
+        STA     vduTempStoreDD
 .LABD0
-        LDA     L00DF
+        LDA     vduTempStoreDF
         PHA
-        LDA     L00DE
+        LDA     vduTempStoreDE
         PHA
         CLC
         LDY     #$02
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$06
-        STA     L00DE
+        STA     vduTempStoreDE
         INY
-        LDA     (L00DC),Y
+        LDA     (vduTempStoreDC),Y
         ADC     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         PLA
-        CMP     L00DE
+        CMP     vduTempStoreDE
         PLA
-        SBC     L00DF
+        SBC     vduTempStoreDF
         BCS     LABF1
 
         JMP     LAB5A
@@ -6683,12 +6699,12 @@ endif
         SEC
         LDY     #$4F
         LDA     #$00
-        SBC     L00DE
-        STA     L00DA
+        SBC     vduTempStoreDE
+        STA     vduTempStoreDA
         STA     L00AC
         LDA     (L00F8),Y
-        SBC     L00DF
-        STA     L00DB
+        SBC     vduTempStoreDF
+        STA     vduTempStoreDB
         STA     L00AD
         JSR     L8D9E
 
@@ -6838,9 +6854,9 @@ endif
         LDA     (L00AC),Y
         PHA
         LDA     L00AC
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L00AD
-        STA     L00DD
+        STA     vduTempStoreDD
         JSR     LB14B
 
         LDX     L032B
@@ -6877,10 +6893,10 @@ endif
 
 .LAD42
         LDA     LAD4F,X
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     LAD50,X
-        STA     L00DB
-        JMP     (L00DA)
+        STA     vduTempStoreDB
+        JMP     (vduTempStoreDA)
 
 .LAD4F
 LAD50 = LAD4F + 1
@@ -6976,12 +6992,12 @@ LAD50 = LAD4F + 1
 
         LDA     L0359
         AND     L033E
-        STA     L00DA
+        STA     vduTempStoreDA
         LDY     #$00
         LDA     (L00AE),Y
         ORA     L033E
         EOR     L033E
-        ORA     L00DA
+        ORA     vduTempStoreDA
         STA     (L00AE),Y
 .LADFC
         RTS
@@ -7543,7 +7559,7 @@ LAD50 = LAD4F + 1
         INX
         TYA
 .LB182
-        STA     (L00DA),Y
+        STA     (vduTempStoreDA),Y
         INY
         DEX
         BNE     LB182
@@ -7593,7 +7609,7 @@ LAD50 = LAD4F + 1
         DEY
 .LB1C4
         TYA
-        STA     (L00DA),Y
+        STA     (vduTempStoreDA),Y
         JSR     LB7A3
 
         TXA
@@ -7601,8 +7617,8 @@ LAD50 = LAD4F + 1
         LDA     (L00AC),Y
         TAX
 .LB1CF
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         JSR     LB7AA
 
         JSR     LB7A3
@@ -7692,17 +7708,17 @@ LAD50 = LAD4F + 1
         BEQ     LB244
 
         LDA     L00AC
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L00AD
-        STA     L00DD
+        STA     vduTempStoreDD
         JSR     LB7EB
 
         JSR     LB7BA
 
-        LDA     L00DC
-        STA     L00DA
-        LDA     L00DD
-        STA     L00DB
+        LDA     vduTempStoreDC
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDD
+        STA     vduTempStoreDB
         LDY     #$01
         LDA     (L00AC),Y
         TAX
@@ -7715,8 +7731,8 @@ LAD50 = LAD4F + 1
         LDA     (L00AC),Y
         TAX
 .LB270
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         JSR     LB7BA
 
         JSR     LB7B1
@@ -7792,14 +7808,14 @@ LAD50 = LAD4F + 1
         CLC
         LDA     L00AC
         SBC     (L00AC),Y
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L00AD
         SBC     #$00
-        STA     L00DB
-        LDA     L00DA
-        CMP     L00DC
-        LDA     L00DB
-        SBC     L00DD
+        STA     vduTempStoreDB
+        LDA     vduTempStoreDA
+        CMP     vduTempStoreDC
+        LDA     vduTempStoreDB
+        SBC     vduTempStoreDD
         BCC     LB338
 
         SEC
@@ -7821,16 +7837,16 @@ LAD50 = LAD4F + 1
         LDY     #$01
 .LB319
         LDA     L00AC,Y
-        STA     L00DC,Y
-        LDA     L00DA,Y
+        STA     vduTempStoreDC,Y
+        LDA     vduTempStoreDA,Y
         STA     L00AC,Y
         DEY
         BPL     LB319
 
         LDA     #$06
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         JSR     L8D83
 
         JSR     LB15B
@@ -7874,10 +7890,10 @@ LAD50 = LAD4F + 1
         TAX
         CLC
         LDA     (L00AC),Y
-        STA     L00DA
+        STA     vduTempStoreDA
         LDY     #$02
         LDA     (L00AC),Y
-        SBC     L00DA
+        SBC     vduTempStoreDA
         STA     (L00AC),Y
         INY
         LDA     (L00AC),Y
@@ -7885,19 +7901,19 @@ LAD50 = LAD4F + 1
         STA     (L00AC),Y
         SEC
         LDA     L00AC
-        STA     L00DC
-        ADC     L00DA
-        STA     L00DA
+        STA     vduTempStoreDC
+        ADC     vduTempStoreDA
+        STA     vduTempStoreDA
         STA     L00AC
         LDA     L00AD
-        STA     L00DD
+        STA     vduTempStoreDD
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         STA     L00AD
         LDA     #$06
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         JSR     L8D9E
 
         TXA
@@ -8119,10 +8135,10 @@ LAD50 = LAD4F + 1
         CLC
         LDA     L00AC
         ADC     #$05
-        STA     L00DC
+        STA     vduTempStoreDC
         LDA     L00AD
         ADC     #$00
-        STA     L00DD
+        STA     vduTempStoreDD
         LDY     #$01
         SEC
         LDA     (L00AC),Y
@@ -8132,22 +8148,22 @@ LAD50 = LAD4F + 1
         DEY
         TAX
 .LB4FF
-        LDA     L00DC
-        STA     L00DA
+        LDA     vduTempStoreDC
+        STA     vduTempStoreDA
         SEC
         LDA     (L00AC),Y
         TAY
         INY
-        ADC     L00DC
-        STA     L00DC
-        LDA     L00DD
-        STA     L00DB
+        ADC     vduTempStoreDC
+        STA     vduTempStoreDC
+        LDA     vduTempStoreDD
+        STA     vduTempStoreDB
         BCC     LB514
 
-        INC     L00DD
+        INC     vduTempStoreDD
 .LB514
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         DEY
         BNE     LB514
 
@@ -8159,7 +8175,7 @@ LAD50 = LAD4F + 1
         INY
 .LB522
         LDA     #$00
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         DEY
         BNE     LB522
 
@@ -8188,35 +8204,35 @@ LAD50 = LAD4F + 1
 
         CLC
         LDA     L00AC
-        ADC     L00DE
-        STA     L00DC
+        ADC     vduTempStoreDE
+        STA     vduTempStoreDC
         LDA     L00AD
-        ADC     L00DF
-        STA     L00DD
-        LDA     L00DC
+        ADC     vduTempStoreDF
+        STA     vduTempStoreDD
+        LDA     vduTempStoreDC
         ADC     #$05
-        STA     L00DC
+        STA     vduTempStoreDC
         BCC     LB55D
 
-        INC     L00DD
+        INC     vduTempStoreDD
 .LB55D
         LDY     #$00
 .LB55F
         CLC
-        LDA     L00DC
-        STA     L00DA
+        LDA     vduTempStoreDC
+        STA     vduTempStoreDA
         SBC     (L00AC),Y
-        STA     L00DC
-        LDA     L00DD
-        STA     L00DB
+        STA     vduTempStoreDC
+        LDA     vduTempStoreDD
+        STA     vduTempStoreDB
         SBC     #$00
-        STA     L00DD
+        STA     vduTempStoreDD
         LDA     (L00AC),Y
         TAY
         INY
 .LB574
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         DEY
         BNE     LB574
 
@@ -8235,9 +8251,9 @@ LAD50 = LAD4F + 1
 
 .print_inline_counted
         PLA
-        STA     L00DA
+        STA     vduTempStoreDA
         PLA
-        STA     L00DB
+        STA     vduTempStoreDB
         TXA
         PHA
         TYA
@@ -8245,22 +8261,22 @@ LAD50 = LAD4F + 1
         JSR     LB7A3
 
         LDY     #$00
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         TAX
         JSR     LB7A3
 
 .LB59C
-        LDA     L00DA
+        LDA     vduTempStoreDA
         PHA
-        LDA     L00DB
+        LDA     vduTempStoreDB
         PHA
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         JSR     oswrch
 
         PLA
-        STA     L00DB
+        STA     vduTempStoreDB
         PLA
-        STA     L00DA
+        STA     vduTempStoreDA
         JSR     LB7A3
 
         DEX
@@ -8270,12 +8286,12 @@ LAD50 = LAD4F + 1
         TAY
         PLA
         TAX
-        JMP     (L00DA)
+        JMP     (vduTempStoreDA)
 
 .LB5BA
         JSR     LB6C5
 
-        STA     L00DC
+        STA     vduTempStoreDC
         LDY     #$01
         LDA     (L00AC),Y
         TAX
@@ -8283,34 +8299,34 @@ LAD50 = LAD4F + 1
         CLC
         LDA     L00AC
         ADC     #$05
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L00AD
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         SEC
         LDY     #$00
         LDA     (L00AC),Y
         SBC     L033F
         SEC
         SBC     L033C
-        STA     L00DF
-        INC     L00DF
+        STA     vduTempStoreDF
+        INC     vduTempStoreDF
 .LB5E2
         TXA
         PHA
-        LDY     L00DF
-        LDA     (L00DA),Y
+        LDY     vduTempStoreDF
+        LDA     (vduTempStoreDA),Y
         PHA
-        ORA     L00DC
-        EOR     L00DC
-        STA     L00DE
-        LDA     (L00DA),Y
-        AND     L00DC
+        ORA     vduTempStoreDC
+        EOR     vduTempStoreDC
+        STA     vduTempStoreDE
+        LDA     (vduTempStoreDA),Y
+        AND     vduTempStoreDC
         ORA     L0363
         EOR     L0363
         LSR     A
-        ORA     L00DE
-        STA     (L00DA),Y
+        ORA     vduTempStoreDE
+        STA     (vduTempStoreDA),Y
         PLA
         AND     L0363
         LDX     L0361
@@ -8319,18 +8335,18 @@ LAD50 = LAD4F + 1
         DEX
         BNE     LB605
 
-        STA     L00DE
+        STA     vduTempStoreDE
         DEY
         BEQ     LB62C
 
 .LB60E
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         PHA
         ORA     L0363
         EOR     L0363
         LSR     A
-        ORA     L00DE
-        STA     (L00DA),Y
+        ORA     vduTempStoreDE
+        STA     (vduTempStoreDA),Y
         PLA
         AND     L0363
         LDX     L0361
@@ -8339,19 +8355,19 @@ LAD50 = LAD4F + 1
         DEX
         BNE     LB623
 
-        STA     L00DE
+        STA     vduTempStoreDE
         DEY
         BNE     LB60E
 
 .LB62C
         LDY     #$00
         SEC
-        LDA     L00DA
+        LDA     vduTempStoreDA
         ADC     (L00AC),Y
-        STA     L00DA
-        LDA     L00DB
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDB
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         PLA
         TAX
         DEX
@@ -8362,7 +8378,7 @@ LAD50 = LAD4F + 1
 .LB643
         JSR     LB6C5
 
-        STA     L00DC
+        STA     vduTempStoreDC
         LDY     #$01
         LDA     (L00AC),Y
         TAX
@@ -8370,34 +8386,34 @@ LAD50 = LAD4F + 1
         CLC
         LDA     L00AC
         ADC     #$06
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L00AD
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         SEC
         LDY     #$00
         LDA     (L00AC),Y
         SBC     L033F
         SEC
         SBC     L033C
-        STA     L00DF
+        STA     vduTempStoreDF
 .LB669
         TXA
         PHA
         LDA     #$00
-        STA     L00DE
-        LDY     L00DF
+        STA     vduTempStoreDE
+        LDY     vduTempStoreDF
         BEQ     LB695
 
         LDY     #$00
 .LB675
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         PHA
         ORA     L0362
         EOR     L0362
         ASL     A
-        ORA     L00DE
-        STA     (L00DA),Y
+        ORA     vduTempStoreDE
+        STA     (vduTempStoreDA),Y
         PLA
         AND     L0362
         LDX     L0361
@@ -8406,32 +8422,32 @@ LAD50 = LAD4F + 1
         DEX
         BNE     LB68A
 
-        STA     L00DE
+        STA     vduTempStoreDE
         INY
-        CPY     L00DF
+        CPY     vduTempStoreDF
         BNE     LB675
 
 .LB695
-        LDA     (L00DA),Y
-        ORA     L00DC
-        EOR     L00DC
-        ORA     L00DE
-        STA     L00DE
-        LDA     (L00DA),Y
-        AND     L00DC
+        LDA     (vduTempStoreDA),Y
+        ORA     vduTempStoreDC
+        EOR     vduTempStoreDC
+        ORA     vduTempStoreDE
+        STA     vduTempStoreDE
+        LDA     (vduTempStoreDA),Y
+        AND     vduTempStoreDC
         ORA     L033E
         EOR     L033E
         ASL     A
-        ORA     L00DE
-        STA     (L00DA),Y
+        ORA     vduTempStoreDE
+        STA     (vduTempStoreDA),Y
         LDY     #$00
         SEC
-        LDA     L00DA
+        LDA     vduTempStoreDA
         ADC     (L00AC),Y
-        STA     L00DA
-        LDA     L00DB
+        STA     vduTempStoreDA
+        LDA     vduTempStoreDB
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         PLA
         TAX
         DEX
@@ -8441,42 +8457,42 @@ LAD50 = LAD4F + 1
 
 .LB6C5
         LDA     L033E
-        STA     L00DC
+        STA     vduTempStoreDC
 .LB6CA
-        ORA     L00DC
-        STA     L00DC
+        ORA     vduTempStoreDC
+        STA     vduTempStoreDC
         LSR     A
         BCC     LB6CA
 
-        LDA     L00DC
+        LDA     vduTempStoreDC
         RTS
 
 .LB6D4
         LDY     #$00
-        STY     L00DE
+        STY     vduTempStoreDE
         LDY     L0361
 .LB6DB
-        ASL     L00DE
+        ASL     vduTempStoreDE
         PHA
         AND     L0363
-        ORA     L00DE
-        STA     L00DE
+        ORA     vduTempStoreDE
+        STA     vduTempStoreDE
         PLA
         LSR     A
         DEY
         BPL     LB6DB
 
-        LDA     L00DE
+        LDA     vduTempStoreDE
         RTS
 
 .LB6ED
         CLC
         LDA     L00AC
         ADC     #$05
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L00AD
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         LDY     #$01
         LDA     (L00AC),Y
         CLC
@@ -8487,38 +8503,38 @@ LAD50 = LAD4F + 1
         LDY     #$00
         LDA     (L00AC),Y
         ADC     #$02
-        STA     L00DD
+        STA     vduTempStoreDD
         LSR     A
-        STA     L00DC
-        INC     L00DD
-        LSR     L00DD
+        STA     vduTempStoreDC
+        INC     vduTempStoreDD
+        LSR     vduTempStoreDD
 .LB712
-        LDY     L00DC
-        LDA     (L00DA),Y
+        LDY     vduTempStoreDC
+        LDA     (vduTempStoreDA),Y
         JSR     LB6D4
 
         PHA
-        LDY     L00DD
-        LDA     (L00DA),Y
+        LDY     vduTempStoreDD
+        LDA     (vduTempStoreDA),Y
         JSR     LB6D4
 
-        LDY     L00DC
-        STA     (L00DA),Y
+        LDY     vduTempStoreDC
+        STA     (vduTempStoreDA),Y
         PLA
-        LDY     L00DD
-        STA     (L00DA),Y
-        INC     L00DD
-        DEC     L00DC
+        LDY     vduTempStoreDD
+        STA     (vduTempStoreDA),Y
+        INC     vduTempStoreDD
+        DEC     vduTempStoreDC
         BNE     LB712
 
         SEC
         LDY     #$00
-        LDA     L00DA
+        LDA     vduTempStoreDA
         ADC     (L00AC),Y
-        STA     L00DA
+        STA     vduTempStoreDA
         BCC     LB73D
 
-        INC     L00DB
+        INC     vduTempStoreDB
 .LB73D
         DEX
         BNE     LB702
@@ -8528,25 +8544,25 @@ LAD50 = LAD4F + 1
 .LB743
         CLC
         LDA     L00AC
-        STA     L00DC
+        STA     vduTempStoreDC
         ADC     #$05
-        STA     L00DA
+        STA     vduTempStoreDA
         LDA     L00AD
-        STA     L00DD
+        STA     vduTempStoreDD
         ADC     #$00
-        STA     L00DB
+        STA     vduTempStoreDB
         JSR     LB7EB
 
         JSR     LB7BA
 
         CLC
         LDY     #$00
-        LDA     L00DC
+        LDA     vduTempStoreDC
         SBC     (L00AC),Y
-        STA     L00DC
+        STA     vduTempStoreDC
         BCS     LB767
 
-        DEC     L00DD
+        DEC     vduTempStoreDD
 .LB767
         LDY     #$01
         LDA     (L00AC),Y
@@ -8562,31 +8578,31 @@ LAD50 = LAD4F + 1
         TAY
         INY
 .LB778
-        LDA     (L00DA),Y
+        LDA     (vduTempStoreDA),Y
         PHA
-        LDA     (L00DC),Y
-        STA     (L00DA),Y
+        LDA     (vduTempStoreDC),Y
+        STA     (vduTempStoreDA),Y
         PLA
-        STA     (L00DC),Y
+        STA     (vduTempStoreDC),Y
         DEY
         BNE     LB778
 
         SEC
         LDY     #$00
-        LDA     L00DA
+        LDA     vduTempStoreDA
         ADC     (L00AC),Y
-        STA     L00DA
+        STA     vduTempStoreDA
         BCC     LB792
 
-        INC     L00DB
+        INC     vduTempStoreDB
 .LB792
         CLC
-        LDA     L00DC
+        LDA     vduTempStoreDC
         SBC     (L00AC),Y
-        STA     L00DC
+        STA     vduTempStoreDC
         BCS     LB79D
 
-        DEC     L00DD
+        DEC     vduTempStoreDD
 .LB79D
         DEX
         BNE     LB772
@@ -8595,45 +8611,45 @@ LAD50 = LAD4F + 1
         JMP     LA94E
 
 .LB7A3
-        INC     L00DA
+        INC     vduTempStoreDA
         BNE     LB7A9
 
-        INC     L00DB
+        INC     vduTempStoreDB
 .LB7A9
         RTS
 
 .LB7AA
-        INC     L00DC
+        INC     vduTempStoreDC
         BNE     LB7A9
 
-        INC     L00DD
+        INC     vduTempStoreDD
         RTS
 
 .LB7B1
-        LDA     L00DA
+        LDA     vduTempStoreDA
         BNE     LB7B7
 
-        DEC     L00DB
+        DEC     vduTempStoreDB
 .LB7B7
-        DEC     L00DA
+        DEC     vduTempStoreDA
         RTS
 
 .LB7BA
-        LDA     L00DC
+        LDA     vduTempStoreDC
         BNE     LB7C0
 
-        DEC     L00DD
+        DEC     vduTempStoreDD
 .LB7C0
-        DEC     L00DC
+        DEC     vduTempStoreDC
         RTS
 
 .LB7C3
         PHA
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         LDA     #$03
-        STA     L00DC
+        STA     vduTempStoreDC
         LDY     #$4B
         LDA     (L00F8),Y
         TAX
@@ -8643,7 +8659,7 @@ LAD50 = LAD4F + 1
         LDY     #$05
         PLA
         PHA
-        CMP     (L00DC),Y
+        CMP     (vduTempStoreDC),Y
         BEQ     LB7E3
 
         JSR     LB7EB
@@ -8653,27 +8669,27 @@ LAD50 = LAD4F + 1
 
 .LB7E3
         PLA
-        LDA     L00DC
-        LDY     L00DD
+        LDA     vduTempStoreDC
+        LDY     vduTempStoreDD
         CPX     #$00
         RTS
 
 .LB7EB
         CLC
         LDY     #$02
-        LDA     (L00DC),Y
-        ADC     L00DC
+        LDA     (vduTempStoreDC),Y
+        ADC     vduTempStoreDC
         PHA
         INY
-        LDA     (L00DC),Y
-        ADC     L00DD
-        STA     L00DD
+        LDA     (vduTempStoreDC),Y
+        ADC     vduTempStoreDD
+        STA     vduTempStoreDD
         PLA
         ADC     #$06
-        STA     L00DC
+        STA     vduTempStoreDC
         BCC     LB803
 
-        INC     L00DD
+        INC     vduTempStoreDD
 .LB803
         RTS
 
@@ -8685,9 +8701,9 @@ LAD50 = LAD4F + 1
         PHA
         LDY     #$4E
         LDA     (L00F8),Y
-        STA     L00DD
+        STA     vduTempStoreDD
         LDA     #$03
-        STA     L00DC
+        STA     vduTempStoreDC
         LDY     #$4B
         LDA     (L00F8),Y
         BEQ     LB820
@@ -8703,11 +8719,11 @@ LAD50 = LAD4F + 1
         SEC
         LDY     #$4F
         LDA     #$00
-        SBC     L00DC
-        STA     L00DE
+        SBC     vduTempStoreDC
+        STA     vduTempStoreDE
         LDA     (L00F8),Y
-        SBC     L00DD
-        STA     L00DF
+        SBC     vduTempStoreDD
+        STA     vduTempStoreDF
         PLA
         TAY
         PLA
@@ -8741,7 +8757,7 @@ LAD50 = LAD4F + 1
         STX     L00F8
         STY     L00F9
         LDY     #$00
-        STY     L00DE
+        STY     vduTempStoreDE
         LDA     (L00F8),Y
         SEC
         SBC     #$30
@@ -8750,23 +8766,23 @@ LAD50 = LAD4F + 1
 
 .LB865
         TAX
-        ASL     L00DE
+        ASL     vduTempStoreDE
         BCS     LB897
 
-        LDA     L00DE
+        LDA     vduTempStoreDE
         ASL     A
         BCS     LB897
 
         ASL     A
         BCS     LB897
 
-        ADC     L00DE
-        STA     L00DE
+        ADC     vduTempStoreDE
+        STA     vduTempStoreDE
         BCS     LB897
 
         TXA
-        ADC     L00DE
-        STA     L00DE
+        ADC     vduTempStoreDE
+        STA     vduTempStoreDE
         BCS     LB897
 
         INC     L00F8
@@ -8780,7 +8796,7 @@ LAD50 = LAD4F + 1
         CMP     #$0A
         BCC     LB865
 
-        LDA     L00DE
+        LDA     vduTempStoreDE
         LDX     L00F8
         LDY     L00F9
         JMP     L8943_set_f8_f9_to_private_workspace
@@ -8823,21 +8839,21 @@ LAD50 = LAD4F + 1
 
 .LB8D4
         LDA     #$00
-        STA     L00DF
+        STA     vduTempStoreDF
         TYA
         LSR     A
-        STA     L00DE
+        STA     vduTempStoreDE
         LDY     #$08
 .LB8DE
         BCC     LB8E6
 
         CLC
         TXA
-        ADC     L00DF
-        STA     L00DF
+        ADC     vduTempStoreDF
+        STA     vduTempStoreDF
 .LB8E6
-        ROR     L00DF
-        ROR     L00DE
+        ROR     vduTempStoreDF
+        ROR     vduTempStoreDE
         DEY
         BNE     LB8DE
 
@@ -9531,7 +9547,7 @@ LAD50 = LAD4F + 1
         RTS
 
 .LBDD0
-        STX     L00DE
+        STX     vduTempStoreDE
         LDA     L0300,X
         STA     L0C2C
         LDA     L0301,X
@@ -9597,7 +9613,7 @@ LAD50 = LAD4F + 1
 
         CLC
 .LBE56
-        LDX     L00DE
+        LDX     vduTempStoreDE
         LDA     L0C32
         STA     L0300,X
         LDA     L0C33
@@ -9607,17 +9623,17 @@ LAD50 = LAD4F + 1
         RTS
 
 .LBE6B
-        STA     L00DF
+        STA     vduTempStoreDF
         SEC
         LDA     L0300,Y
         SBC     L0300,X
-        STA     L00DE
+        STA     vduTempStoreDE
         LDA     L0301,Y
         SBC     L0301,X
-        LDX     L00DF
+        LDX     vduTempStoreDF
         STA     L0301,X
         ROL     A
-        LDA     L00DE
+        LDA     vduTempStoreDE
         STA     L0300,X
         BCC     LBE9A
 
