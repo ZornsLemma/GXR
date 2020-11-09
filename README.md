@@ -12,4 +12,6 @@ The initial disassembly was performed using Phill Harvey-Smith's [BeebDis](https
 
 ## Building
 
-TODO
+You'll need a copy of [BeebAsm](https://github.com/stardot/beebasm/) to build the ROMs.
+
+If you're on a Unix-like system and have beebasm on your PATH, running "./make.sh" should build all three ROMs and the sample disc images. It doesn't do anything clever so you should easily be able to execute the equivalent commands manually on other platforms.
