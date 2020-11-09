@@ -1,4 +1,5 @@
 ; Hex labels are based on GXR 1.20 absolute addresses.
+; TODO: I am not sure the "paint" example is working properly, but not 100% sure - the cursor seems to be a funny shape and so forth, but on a model B it seems differently broken anyway
 
 macro unknown_machine
         error "Can't assemble for unknown machine!"
