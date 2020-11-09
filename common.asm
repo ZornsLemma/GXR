@@ -441,7 +441,7 @@ endif
         STA     (L00F8),Y
         JSR     L8A6A
 
-        LDY     #$47
+        LDY     #(L899D - L8955) - 1
 .L80FD
         LDA     L8955,Y
         STA     (L00F8),Y
@@ -1060,6 +1060,7 @@ endif
         PLA
         RTS
 
+; The code from L8955 to L899D (exclusive) is copied into RAM by L08FD.
 .L8955
         PHA
         LDA     vduJumpVector + 0
