@@ -265,12 +265,16 @@ L0C50   = $0C50
 L0C51   = $0C51
 L0C52   = $0C52
 L0DF0   = $0DF0
+if BBC_B or BBC_B_PLUS
 LFE30   = $FE30
-LFFCE   = $FFCE
-LFFD7   = $FFD7
-LFFDA   = $FFDA
-LFFDD   = $FFDD
-LFFE0   = $FFE0
+elif ELECTRON
+LFE05   = $FE05
+endif
+osfind  = $FFCE
+osbget  = $FFD7
+osargs  = $FFDA
+osfile  = $FFDD
+osrdch  = $FFE0
 osnewl  = $FFE7
 oswrch  = $FFEE
 osbyte  = $FFF4
@@ -1120,13 +1124,31 @@ endif
         PHA
 .lda_imm_to_patch_2
         LDA     #$FF
+if BBC_B or BBC_B_PLUS
         STA     L00F4
         STA     LFE30
+elif ELECTRON
+        JSR     electron_sta_romsel
+        ; TODO: Can maybe get rid of these NOPs, but play it safe for now
+        NOP
+        NOP
+else
+        unknown_machine
+endif
         JSR     L8BCE
 
         PLA
+if BBC_B or BBC_B_PLUS
         STA     L00F4
         STA     LFE30
+elif ELECTRON
+        JSR     electron_sta_romsel
+        ; TODO: Can maybe get rid of these NOPs, but play it safe for now
+        NOP
+        NOP
+else
+        unknown_machine
+endif
         PLA
         RTS
 
@@ -5654,7 +5676,7 @@ endif
         LDX     #$53
         LDY     L00F9
         LDA     #$00
-        JSR     LFFDD
+        JSR     osfile
 
         JSR     L8943
 
@@ -5690,7 +5712,7 @@ endif
         LDX     #$53
         LDY     L00F9
         LDA     #$00
-        JMP     LFFDD
+        JMP     osfile
 
 .LA638
         JSR     LA72E
@@ -5780,20 +5802,20 @@ endif
         LDX     L00DA
         LDY     L00DB
         LDA     #$40
-        JSR     LFFCE
+        JSR     osfind
 
         CMP     #$00
         BEQ     LA67C
 
         TAY
-        JSR     LFFD7
+        JSR     osbget
 
         PHA
-        JSR     LFFD7
+        JSR     osbget
 
         PHA
         LDA     #$00
-        JSR     LFFCE
+        JSR     osfind
 
         JSR     L8943
 
@@ -5820,7 +5842,7 @@ endif
         LDX     #$53
         LDY     L00F9
         LDA     #$FF
-        JSR     LFFDD
+        JSR     osfile
 
         JSR     L8943
 
@@ -5848,7 +5870,7 @@ endif
         LDA     #$00
         TAY
         LDX     #$A8
-        JSR     LFFDA
+        JSR     osargs
 
         AND     #$FC
         BNE     LA747
@@ -6684,7 +6706,7 @@ endif
         TAX
         JSR     osbyte
 
-        JSR     LFFE0
+        JSR     osrdch
 
         BCS     LACFA
 
@@ -9677,6 +9699,18 @@ LAD50 = LAD4F + 1
 
 .LBFC6
         RTS
+
+if ELECTRON
+.electron_sta_romsel
+        PHA
+        LDA     #12
+        STA     L00F4
+        STA     LFE05
+        PLA
+        STA     L00F4
+        STA     LFE05
+        RTS
+endif
 
         skipto  $bfdb
         EQUS    " Richard,Sam,Tutu,Tim,Paul & Sharron "
