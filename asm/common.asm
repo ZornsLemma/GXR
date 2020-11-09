@@ -329,7 +329,7 @@ LFFFF   = $FFFF
         EQUB    $82
 
 .L8007
-        EQUB    $26
+        EQUB    copyright - L8000 - 1
 
 .L8008
         EQUB    $01
@@ -341,11 +341,12 @@ if BBC_B
 elif BBC_B_PLUS
         EQUS    "Graphics Extension ROM 2.00",$0A,$0D,$00
 elif ELECTRON
-        EQUS    "Graphics Extension ROM 1.00",$0A,$0D,$00
+        EQUS    "Graphics Extension ROM 1.00a",$0A,$0D,$00
 else
         unknown_machine
 endif
 
+.copyright
         EQUS    "(C)1985 Acornsoft",$00
 
 .L8039
@@ -9782,6 +9783,12 @@ LAD50 = LAD4F + 1
 
 .LBFC6
         RTS
+
+if ELECTRON
+        ; Make it relatively obvious this isn't an original 1980s Acorn version
+        ; for the Electron.
+        EQUS    "Steve 2020"
+endif
 
         skipto  $bfdb
         EQUS    " Richard,Sam,Tutu,Tim,Paul & Sharron "
