@@ -490,7 +490,7 @@ endif
         DEY
         PLA
         STA     (L00F8),Y
-        LDY     #(lda_imm_our_wrchv_handler_ram_hi_patch - L8955) + 1
+        LDY     #(lda_imm_our_stub_wrchv_handler_ram_hi_patch - L8955) + 1
         LDA     L032A
         STA     (L00F8),Y
         LDY     #(lda_imm_our_rom_bank_patch - L8955) + 1
@@ -1117,9 +1117,9 @@ endif
         CMP     #hi(vdu25EntryPoint)
         BNE     L8961
 
-        LDA     #our_wrchv_handler_rom - L8955
+        LDA     #our_stub_wrchv_handler_rom - L8955
         STA     vduJumpVector + 0
-.lda_imm_our_wrchv_handler_ram_hi_patch
+.lda_imm_our_stub_wrchv_handler_ram_hi_patch
         LDA     #$FF ; patched to LDA #hi(our_private_workspace)
         STA     vduJumpVector + 1
         BNE     L8961
@@ -1136,8 +1136,8 @@ endif
         SEC
         BCS     L8987
 
-; We set WRCHV to point to the RAM copy of our_wrchv_handler_rom
-.our_wrchv_handler_rom
+; We set WRCHV to point to the RAM copy of our_stub_wrchv_handler_rom
+.our_stub_wrchv_handler_rom
         CLC
 .L8987
         PHA
@@ -1156,7 +1156,7 @@ elif ELECTRON
 else
         unknown_machine
 endif
-        JSR     L8BCE
+        JSR     L8BCE_our_main_wrch_handler
 
         PLA
 if BBC_B or BBC_B_PLUS
@@ -1458,7 +1458,7 @@ L8B72 = L8B71 + 1
         PLA
         RTS
 
-.L8BCE
+.L8BCE_our_main_wrch_handler
         JSR     L8943_set_f8_f9_to_private_workspace
 
         BCS     L8BBB
