@@ -16,6 +16,7 @@ service_unrecognised_oscli = $04
 service_unrecognised_osbyte = $07
 service_help = $09
 
+workspace_6c = $6c ; $20 bytes of data based on screen mode, set by L8D0E_get_mode_data
 workspace_98 = $98 ; b7 set iff we have saved UDGs from page $C in private workspace
 
 if BBC_B
@@ -509,7 +510,7 @@ endif
         STA     xvduv + 1
         LDA     L00F4
         STA     xvduv + 2
-        JSR     L8D0E
+        JSR     L8D0E_get_mode_data
 
         LDA     #$00
         JSR     L8324
@@ -1442,7 +1443,7 @@ L8B72 = L8B71 + 1
         PHA
         TYA
         PHA
-        JSR     L8D0E
+        JSR     L8D0E_get_mode_data
 
         LDA     #$00
         JSR     L8324
@@ -1625,7 +1626,7 @@ L8B72 = L8B71 + 1
         CMP     #$0B
         BCC     L8CD2
 
-        BEQ     L8D0E
+        BEQ     L8D0E_get_mode_data
 
         CMP     #$10
         BCC     L8D31
@@ -1685,7 +1686,7 @@ L8B72 = L8B71 + 1
 
         RTS
 
-.L8D0E
+.L8D0E_get_mode_data
 {
         LDA     vduCurrentScreenMODE
         BNE     L8D16
@@ -1703,7 +1704,7 @@ L8B72 = L8B71 + 1
         ASL     A
         TAX
         LDY     #$20
-        LDA     #$6B
+        LDA     #workspace_6c - 1
         STA     L00F8
 .L8D27
         LDA     L8A97,X
