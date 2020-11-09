@@ -461,12 +461,11 @@ endif
         STA     (L00F8),Y
         JSR     L8A6A
 
-        ; Copy the code at L8955 into our workspace and patch the addresses.
-        ;
-        ; Although I've tried to derive the correct values at assembly time, it's
-        ; almost certainly necessary that the code copied doesn't get any longer as
-        ; offset $48 holds an (unrelated) value. We could probably get away with
-        ; shrinking the copied code, but I haven't tried this.
+        ; Copy the code at L8955 into our workspace. Although I've tried to
+        ; derive the correct values at assembly time, it's almost certainly
+        ; necessary that the code copied doesn't get any longer as offset $48
+        ; holds an (unrelated) value. We could probably get away with shrinking
+        ; the copied code, but I haven't tried this.
         assert (L899D - L8955) - 1 == $47
         LDY     #(L899D - L8955) - 1
 {
@@ -477,6 +476,7 @@ endif
         BPL     L80FD
 }
 
+        ; Patch the copied code.
         LDY     #(jmp_old_wrchv_patch - L8955) + 1
         LDA     wrchv + 0
         PHA
@@ -495,15 +495,17 @@ endif
         LDY     #(lda_imm_our_rom_bank_patch - L8955) + 1
         LDA     L00F4
         STA     (L00F8),Y
-        JSR     L88F9
 
+        ; Save the original VDUV and XVDUV values in our workspace and install
+        ; L8CB4_our_vduv_handler on VDUV.
+        JSR     L88F9_swap_vduv_xvduv_with_copies
         LDA     #lo(extendedVectorTableVduV)
         STA     vduv + 0
         LDA     #hi(extendedVectorTableVduV)
         STA     vduv + 1
-        LDA     #lo(L8CB4)
+        LDA     #lo(L8CB4_our_vduv_handler)
         STA     xvduv + 0
-        LDA     #hi(L8CB4)
+        LDA     #hi(L8CB4_our_vduv_handler)
         STA     xvduv + 1
         LDA     L00F4
         STA     xvduv + 2
@@ -1032,7 +1034,8 @@ endif
 
         RTS
 
-.L88F9
+; Swap vduv and xvduv with the copies held in our private workspace.
+.L88F9_swap_vduv_xvduv_with_copies
         TYA
         PHA
         JSR     L8943_set_f8_f9_to_private_workspace
@@ -1606,7 +1609,7 @@ L8B72 = L8B71 + 1
         LDA     #$1B
         JMP     L8CD2
 
-.L8CB4
+.L8CB4_our_vduv_handler
         JSR     L8943_set_f8_f9_to_private_workspace
 
         BCC     L8CD3
@@ -1635,14 +1638,14 @@ L8B72 = L8B71 + 1
 .L8CD3
         PHP
         PHA
-        JSR     L88F9
+        JSR     L88F9_swap_vduv_xvduv_with_copies
 
         PLA
         PLP
         JSR     L8CE3
 
         PHA
-        JSR     L88F9
+        JSR     L88F9_swap_vduv_xvduv_with_copies
 
         PLA
         RTS
@@ -1683,6 +1686,7 @@ L8B72 = L8B71 + 1
         RTS
 
 .L8D0E
+{
         LDA     L0355
         BNE     L8D16
 
@@ -1709,6 +1713,7 @@ L8B72 = L8B71 + 1
         BNE     L8D27
 
         RTS
+}
 
 .L8D31
         SBC     #$0B
