@@ -1,2 +1,7 @@
-*.rom
-*.exe
+asm/*.lst
+discs/Graphics_Extension_ROM.ssd
+discs/Graphics_Extension_ROM_Sprites.ssd
+roms/gxr100.rom
+roms/gxr120.rom
+roms/gxr200.rom
+tmp/*
