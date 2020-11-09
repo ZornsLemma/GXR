@@ -1226,8 +1226,9 @@ endif
 .L899D
         JSR     print_inline_counted
 
-        EQUB    $1F
+        EQUB    not_compatible_end - not_compatible_start
 
+.not_compatible_start
         EQUS    "GXR "
 if BBC_B
         EQUS    "1.20"
@@ -1239,6 +1240,7 @@ else
         unknown_machine
 endif
         EQUS    " is not compatible with"
+.not_compatible_end
 
 .L89C0
         LDA     #$00
