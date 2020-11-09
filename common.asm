@@ -90,7 +90,7 @@ elif ELECTRON
         copyFourBytesWithinVDUVariables = $D3A1 ; TODO: ELK ZP DIFFS
         fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
         setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
-        selectRom = $E3A9
+        selectRom = $E3A0
 else
         unknown_machine
 endif
@@ -274,8 +274,6 @@ L0C52   = $0C52
 L0DF0   = $0DF0
 if BBC_B or BBC_B_PLUS
 LFE30   = $FE30
-elif ELECTRON
-LFE05   = $FE05
 endif
 osfind  = $FFCE
 osbget  = $FFD7
@@ -1129,7 +1127,7 @@ endif
         ; OSWRCH.
         LDA     #our_stub_vdu25EntryPoint_rom - L8955
         STA     vduJumpVector + 0
-.lda_imm_our_stub_wrchv_handler_ram_hi_patch
+.lda_imm_our_stub_wrchv_handler_ram_hi_patch ; TODO: change "ram" to "rom" in label name?
         LDA     #$FF ; patched to LDA #hi(our_private_workspace)
         STA     vduJumpVector + 1
         BNE     L8961
