@@ -42,11 +42,6 @@ else
         unknow_machine
 endif
 
-; TODO: COMMENT, I THINK THIS GENERATES A TABLE ENTRY SUITABLE FOR USE WITH RTS HACK
-macro equh n
-        equb lo(n-1), hi(n-1)
-endmacro
-
 L00A8   = $00A8
 L00A9   = $00A9
 L00AA   = $00AA
@@ -6835,14 +6830,22 @@ endif
 
 .LAD4F
 LAD50 = LAD4F + 1
-        equh    LADFD
-        equh    LADFD
-        equh    LADFD
-        equh    LB1F8
-        EQUB    $45
-        EQUB    $B2,$2D,$B5,$43,$B6,$FC,$AD,$FC
-        EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$16
-        EQUB    $B0,$64,$B0,$C2,$B0,$07,$B1,$AB
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LB1F7
+        EQUW    LB245
+        EQUW    LB52D
+        EQUW    LB643
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LB016
+        EQUW    LB064
+        EQUW    LB0C2
+        EQUB    $07,$B1,$AB
         EQUB    $B3,$21,$B4,$B4,$B3,$6D,$B1,$AF
         EQUB    $B1,$DF,$B4,$BA,$B5,$ED,$B6,$43
         EQUB    $B7,$FC,$AD,$FC,$AD,$B7,$AD,$F6
@@ -6901,6 +6904,7 @@ LAD50 = LAD4F + 1
         EOR     L033E
         ORA     L00DA
         STA     (L00AE),Y
+.LADFC
         RTS
 
 .LADFD
@@ -7223,6 +7227,7 @@ LAD50 = LAD4F + 1
 
         JMP     LB03F
 
+.LB016
         JSR     LA957
 
         SEC
@@ -7270,6 +7275,7 @@ LAD50 = LAD4F + 1
 
         JMP     LB0A0
 
+.LB064
         JSR     LA957
 
         SEC
@@ -7323,6 +7329,7 @@ LAD50 = LAD4F + 1
 
         JMP     LB0EB
 
+.LB0C2
         JSR     LA957
 
         SEC
@@ -7590,6 +7597,7 @@ LAD50 = LAD4F + 1
 .LB244
         RTS
 
+.LB245
         LDY     #$00
         LDA     (L00AC),Y
         BEQ     LB244
@@ -8067,6 +8075,7 @@ LAD50 = LAD4F + 1
 .LB52C
         RTS
 
+.LB52D
         LDY     #$01
         LDA     (L00AC),Y
         BEQ     LB586
@@ -8256,6 +8265,7 @@ LAD50 = LAD4F + 1
 
         JMP     LA94E
 
+.LB643
         JSR     LB6C5
 
         STA     L00DC
