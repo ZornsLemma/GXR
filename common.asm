@@ -59,6 +59,9 @@ elif ELECTRON
         plotPointWithinBoundsAtY = $D004 ; TODO: BUT B &D4 SEEMS TO BE &DE ON ELK, BEEB D6 IS ELK D4, BEEB DA IS ELK D8, BEEK D5 IS ELK DF
         checkPointXIsWithinGraphicsWindow = $D020 ; TODO: ELK ZP DIFFS
         checkPointIsWithinWindowHorizontalOrVertical = $D039
+        plotConvertExternalRelativeCoordinatesToPixels = $D05E ; TODO: ELK ZP DIFFS
+        moveGraphicsCursorAddressUpOneCharacterCell = $D2EA ; TODO: ELK ZP DIFFS, BEEB D7 IS ELK D5
+        moveGraphicsCursorAddressTotheRightAndUpdateMask = $D304 ; TODO: ELK ZP DIFFS
 else
         unknown_machine
 endif
