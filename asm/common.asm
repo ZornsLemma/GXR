@@ -78,19 +78,19 @@ elif ELECTRON
         vdu25EntryPoint = $C986
         vdu22EntryPoint = $C8EC
         exchangeTwoVDUBytes = $CD1A
-        plotPointWithinBoundsAtY = $D004 ; TODO: BUT B &D4 SEEMS TO BE &DE ON ELK, BEEB D6 IS ELK D4, BEEB DA IS ELK D8, BEEK D5 IS ELK DF
-        checkPointXIsWithinGraphicsWindow = $D020 ; TODO: ELK ZP DIFFS
+        plotPointWithinBoundsAtY = $D004
+        checkPointXIsWithinGraphicsWindow = $D020
         checkPointIsWithinWindowHorizontalOrVertical = $D039
-        plotConvertExternalRelativeCoordinatesToPixels = $D05E ; TODO: ELK ZP DIFFS
-        moveGraphicsCursorAddressUpOneCharacterCell = $D2EA ; TODO: ELK ZP DIFFS, BEEB D7 IS ELK D5
-        moveGraphicsCursorAddressTotheRightAndUpdateMask = $D304 ; TODO: ELK ZP DIFFS
-        moveGraphicsCursorAddressTotheRight = $D309 ; TODO: ELK ZP DIFFS
-        moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D314 ; TODO: ELK ZP DIFFS
+        plotConvertExternalRelativeCoordinatesToPixels = $D05E
+        moveGraphicsCursorAddressUpOneCharacterCell = $D2EA
+        moveGraphicsCursorAddressTotheRightAndUpdateMask = $D304
+        moveGraphicsCursorAddressTotheRight = $D309
+        moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D314
         copyEightBytesWithinVDUVariables = $D393
         copyTwoBytesWithinVDUVariables = $D399
-        copyFourBytesWithinVDUVariables = $D3A1 ; TODO: ELK ZP DIFFS
-        fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
-        setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
+        copyFourBytesWithinVDUVariables = $D3A1
+        fillRow = $D5BC
+        setScreenAddress = $D77A
         selectRom = $E3A0
 else
         unknown_machine
@@ -332,10 +332,17 @@ LFFFF   = $FFFF
 .L8007
         EQUB    copyright - L8000 - 1
 
-.L8008
+.L8008_binary_version
+if BBC_B or BBC_B_PLUS
         EQUB    $01
+elif ELECTRON
+        ; This is handled separately so the binary version number can be changed
+        ; in bug fix releases.
+        EQUB    $01
+else
+        unknown_machine
+endif
 
-        ; TODO: Somewhere (perhaps in dead space at end) put e.g. a 2020 TIME$ date so that releases can be distinguished - as the version number is likely to "stick" at 1.00 to match the OS, some other way to distinguish is good - perhaps also change the binary version?
 .L8009
 if BBC_B
         EQUS    "Graphics Extension ROM 1.20",$0A,$0D,$00
@@ -383,9 +390,10 @@ if BBC_B
 elif BBC_B_PLUS
         AND     #$02
 elif ELECTRON
-        ; TODO: Copy BBC B for now, ask Electron experts for advice on best option -
-        ; I think this is controlling the automatic enable/disable of ROM based on
-        ; which bank it's in. Also see GXR manual, it may say what Electron does.
+        ; TODO: What's the best rule for deciding default on/off for an Electron?
+        ; I suspect a 1980s cartridge release for use with the Plus 1 would have
+        ; done AND #2 so one cartridge would enable it by default and the other
+        ; wouldn't.
         AND     #$01
 else
         unknown_machine
@@ -524,7 +532,7 @@ endif
         DEY
         PLA
         STA     (L00F8),Y
-        LDY     #(lda_imm_our_stub_wrchv_handler_ram_hi_patch - L8955) + 1
+        LDY     #(lda_imm_our_stub_wrchv_handler_rom_hi_patch - L8955) + 1
         LDA     L032A
         STA     (L00F8),Y
         LDY     #(lda_imm_our_rom_bank_patch - L8955) + 1
@@ -1162,7 +1170,7 @@ endif
         ; OSWRCH.
         LDA     #our_stub_vdu25EntryPoint_rom - L8955
         STA     vduJumpVector + 0
-.lda_imm_our_stub_wrchv_handler_ram_hi_patch ; TODO: change "ram" to "rom" in label name?
+.lda_imm_our_stub_wrchv_handler_rom_hi_patch
         LDA     #$FF ; patched to LDA #hi(our_private_workspace)
         STA     vduJumpVector + 1
         BNE     L8961
