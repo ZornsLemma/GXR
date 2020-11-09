@@ -3,3 +3,4 @@
 #beebasm -v -i gxr200.asm -D BeebDisStartAddr=0x8000 > gxr200.lst
 beebasm -v -i top-b.asm -D BeebDisStartAddr=0x8000 > gxr120.lst
 beebasm -v -i top-b-plus.asm -D BeebDisStartAddr=0x8000 > gxr200.lst
+beebasm -v -i top-electron.asm -D BeebDisStartAddr=0x8000 > gxr100.lst

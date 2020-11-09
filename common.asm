@@ -1,5 +1,9 @@
 ; Hex labels are based on GXR 1.20 absolute addresses.
 
+macro unknown_machine
+        error "Can't assemble for unknown machine!"
+endmacro
+
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
@@ -48,7 +52,7 @@ elif BBC_B_PLUS
         b_plus_modify_d6_indirect_y_by_ora_d4_eor_d5 = $D0D0
         b_plus_lda_d6_indirect_y_eor_35a_sta_da = $D427
 else
-        unknow_machine
+        unknown_machine
 endif
 
 L00A8   = $00A8
