@@ -1,15 +1,17 @@
 ; Hex labels are based on GXR 1.20 absolute addresses.
 
 if BBC_B
-        TODO1 = $C41C
-        TODO2 = $C423
-        TODO3 = $D10F
-        TODO4 = $C406
-        TODO5 = $D48A
-        TODO6 = $CDDE
-        TODO7 = $D3D3
-        TODO8 = $D3ED
-        TODO9 = $D3FD
+        ; Labels here are chosen to correspond to the annotated OS disassembly
+        ; at https://tobylobster.github.io/mos/index.html.
+        gcolPlotOptionsTable = $C41C
+        solidColourTablesMinus1 = $C423 ; TODO: not too happy with this name
+        checkPointXIsWithinGraphicsWindow = $D10F
+        pixelTablesMinus1 = $C406 ; TODO: not too happy with this name
+        copyFourBytesWithinVDUVariables = $D48A
+        exchangeTwoVDUBytes = $CDDE
+        moveGraphicsCursorAddressUpOneCharacterCell = $D3D3
+        moveGraphicsCursorAddressTotheRightAndUpdateMask = $D3ED
+        moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D3FD
         TODO10 = $D128
         TODO11 = $D47C
         TODO12 = $D482
@@ -19,15 +21,15 @@ if BBC_B
         TODO16 = $D3F2
         TODO17 = $D6A6
 elif BBC_B_PLUS
-        TODO1 = $C413
-        TODO2 = $C41A
-        TODO3 = $CA79
-        TODO4 = $C3FD
-        TODO5 = $D403
-        TODO6 = $CDA6
-        TODO7 = $D34B
-        TODO8 = $D365
-        TODO9 = $D375
+        gcolPlotOptionsTable = $C413
+        solidColourTablesMinus1 = $C41A
+        checkPointXIsWithinGraphicsWindow = $CA79
+        pixelTablesMinus1 = $C3FD
+        copyFourBytesWithinVDUVariables = $D403
+        exchangeTwoVDUBytes = $CDA6
+        moveGraphicsCursorAddressUpOneCharacterCell = $D34B
+        moveGraphicsCursorAddressTotheRightAndUpdateMask = $D365
+        moveGraphicsCursorAddressTotheLeftAndUpdateMask = $D375
         TODO10 = $D0D9
         TODO11 = $D3F4
         TODO12 = $D3FB
@@ -617,7 +619,7 @@ endif
         EQUW    LAB5D
         EQUW    LA40E
 
-        L8279   = L8278+1
+        L8279   = L8278 + 1
 .L8294
         LDA     (L00F2),Y
         INY
@@ -1315,7 +1317,7 @@ L8A89 = L8A87+2
         RTS
 
 .L8B55
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BNE     L8B54
 
@@ -1336,7 +1338,7 @@ L8A89 = L8A87+2
         RTS
 
 .L8B71
-L8B72 = L8B71+1
+L8B72 = L8B71 + 1
         EQUW    L9AEB
         EQUW    L9AEB
         EQUW    L9AEB
@@ -1427,13 +1429,13 @@ L8B72 = L8B71+1
         PHA
         AND     #$0F
         TAY
-        LDA     TODO1+0,Y
+        LDA     gcolPlotOptionsTable + 0,Y
         STA     L00A8
-        LDA     TODO1+1,Y
+        LDA     gcolPlotOptionsTable + 1,Y
         STA     L00A9
-        LDA     TODO1-1,Y
+        LDA     gcolPlotOptionsTable - 1,Y
         STA     L00AA
-        LDA     TODO1+4,Y
+        LDA     gcolPlotOptionsTable + 4,Y
         STA     L00AB
         PLA
         AND     #$F0
@@ -1643,7 +1645,7 @@ L8B72 = L8B71+1
         AND     #$07
         ADC     L00DA
         TAY
-        LDA     TODO2,Y
+        LDA     solidColourTablesMinus1,Y
         STA     L031C,X
         DEX
         BPL     L8D3B
@@ -1754,7 +1756,7 @@ L8B72 = L8B71+1
 .L8DE5
         LDX     #$2A
         LDY     #$2E
-        JSR     TODO6
+        JSR     exchangeTwoVDUBytes
 
 .L8DEC
         LDX     #$28
@@ -2111,7 +2113,7 @@ L8B72 = L8B71+1
 .L9044
         LDX     #$24
         LDY     #$14
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         LDY     #$14
         LDX     #$20
@@ -2162,7 +2164,7 @@ L8B72 = L8B71+1
 .L9095
         LDX     #$24
         LDY     #$14
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         LDY     #$14
         LDX     #$20
@@ -3579,13 +3581,13 @@ L8B72 = L8B71+1
         DEX
         DEX
         TAY
-        JSR     TODO6
+        JSR     exchangeTwoVDUBytes
 
         INX
         INX
         INY
         INY
-        JSR     TODO6
+        JSR     exchangeTwoVDUBytes
 
         STA     L0C16
         PLA
@@ -3780,7 +3782,7 @@ L8B72 = L8B71+1
         STA     L0C11
 .L9B14
         LDX     #$24
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         STA     L00DC
         BEQ     L9B23
@@ -3790,7 +3792,7 @@ L8B72 = L8B71+1
         STA     L00DB
 .L9B23
         LDX     #$20
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         STA     L0C14
         BEQ     L9B39
@@ -3821,7 +3823,7 @@ L8B72 = L8B71+1
         JSR     L99DF
 
         LDX     #$28
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BIT     L0C14
         BNE     L9B37
@@ -3838,7 +3840,7 @@ L8B72 = L8B71+1
         JSR     L9981
 
         LDX     #$28
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
 .L9B71
         TAY
@@ -3966,7 +3968,7 @@ endif
         DEY
         BPL     L9C3E
 
-        JSR     TODO7
+        JSR     moveGraphicsCursorAddressUpOneCharacterCell
 
         JMP     L9C3E
 
@@ -4008,7 +4010,7 @@ endif
         LSR     L00D1
         BCC     L9C78
 
-        JSR     TODO8
+        JSR     moveGraphicsCursorAddressTotheRightAndUpdateMask
 
         JMP     L9C78
 
@@ -4016,7 +4018,7 @@ endif
         ASL     L00D1
         BCC     L9C78
 
-        JSR     TODO9
+        JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
 
 .L9C78
         SEC
@@ -4295,7 +4297,7 @@ endif
         LDA     #$00
         STA     L032F
         SEC
-        JSR     TODO9
+        JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
 
         JMP     L9DF9
 
@@ -4345,7 +4347,7 @@ endif
         LDA     #$00
         STA     L032F
         SEC
-        JSR     TODO8
+        JSR     moveGraphicsCursorAddressTotheRightAndUpdateMask
 
         JMP     L9E4B
 
@@ -4411,7 +4413,7 @@ endif
         LSR     L00D1
         BCC     L9EB6
 
-        JSR     TODO8
+        JSR     moveGraphicsCursorAddressTotheRightAndUpdateMask
 
         JMP     L9EB6
 
@@ -4554,13 +4556,13 @@ endif
 .L9F95
         AND     #$02
         STA     L0345
-        LDA     TODO1
+        LDA     gcolPlotOptionsTable
         STA     L00A8
-        LDA     TODO1+1
+        LDA     gcolPlotOptionsTable + 1
         STA     L00A9
-        LDA     TODO1-1
+        LDA     gcolPlotOptionsTable - 1
         STA     L00AA
-        LDA     TODO1+4
+        LDA     gcolPlotOptionsTable+4
         STA     L00AB
         LDX     #$01
         JSR     L8E35
@@ -4577,7 +4579,7 @@ endif
 
         LDY     #$34
         LDX     #$20
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         STY     L00DA
         LDX     #$34
@@ -4729,11 +4731,11 @@ endif
 .LA0BC
         LDX     #$2A
         LDY     #$2E
-        JSR     TODO6
+        JSR     exchangeTwoVDUBytes
 
         LDX     #$36
         LDY     #$3A
-        JSR     TODO6
+        JSR     exchangeTwoVDUBytes
 
 .LA0CA
         JSR     LA0D9
@@ -5001,7 +5003,7 @@ endif
         CLC
         ADC     L0361
         TAY
-        LDA     TODO4,Y
+        LDA     pixelTablesMinus1,Y
         EOR     L8A89,Y
         STA     L00DC
         LDA     L0300,X
@@ -5087,7 +5089,7 @@ endif
         STA     L0330
         LDX     #$20
         LDY     #$34
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         STY     L00DA
         LDA     L0361
@@ -5100,7 +5102,7 @@ endif
         JSR     LA1C2
 
         LDX     #$34
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BEQ     LA30D
 
@@ -5143,7 +5145,7 @@ endif
 
 .LA30D
         LDX     #$38
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BEQ     LA348
 
@@ -5269,7 +5271,7 @@ endif
         INC     L00F9
 .LA3DA
         SEC
-        JSR     TODO9
+        JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
 
         DEX
         BNE     LA3BB
@@ -5340,7 +5342,7 @@ endif
         JSR     L8E0D
 
         LDX     #$28
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BEQ     LA45E
 
@@ -5367,7 +5369,7 @@ endif
 
 .LA45E
         LDX     #$2C
-        JSR     TODO3
+        JSR     checkPointXIsWithinGraphicsWindow
 
         BEQ     LA483
 
@@ -5528,7 +5530,7 @@ endif
         INC     L00DB
 .LA54B
         SEC
-        JSR     TODO9
+        JSR     moveGraphicsCursorAddressTotheLeftAndUpdateMask
 
         DEX
         BNE     LA53C
@@ -9177,11 +9179,11 @@ LAD50 = LAD4F + 1
 .LBBBA
         LDX     #$38
         LDY     #$34
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         LDX     #$3C
         LDY     #$38
-        JSR     TODO5
+        JSR     copyFourBytesWithinVDUVariables
 
         SEC
         LDA     L0330
