@@ -14,6 +14,7 @@ if BBC_B
         TODO11 = $D47C
         TODO12 = $D482
         TODO13 = $D864
+        TODO14 = $D0F3
 elif BBC_B_PLUS
         TODO1 = $C413
         TODO2 = $C41A
@@ -28,8 +29,7 @@ elif BBC_B_PLUS
         TODO11 = $D3F4
         TODO12 = $D3FB
         TODO13 = $D7ED
-        B_PLUS_LCDA6 = $CDA6
-        B_PLUS_LD0BF = $D0BF
+        TODO14 = $D0BF
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
         B_PLUS_LD0FE = $D0FE
@@ -1334,13 +1334,7 @@ endif
 
         BNE     L8B54
 
-if BBC_B
-        JMP     LD0F3
-elif BBC_B_PLUS
-        JMP     B_PLUS_LD0BF
-else
-        unknown_machine
-endif
+        JMP     TODO14
 
 .L8B54
         RTS
@@ -1797,13 +1791,7 @@ endif
 .L8DE5
         LDX     #$2A
         LDY     #$2E
-if BBC_B
         JSR     TODO6
-elif BBC_B_PLUS
-        JSR     B_PLUS_LCDA6
-else
-        unknown_machine
-endif
 
 .L8DEC
         LDX     #$28
@@ -4010,7 +3998,7 @@ if BBC_B
         EOR     L00DA
         STA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     B_PLUS_LD0BF
+        JSR     TODO14
 else
         unknown_machine
 endif
@@ -4431,7 +4419,7 @@ elif BBC_B_PLUS
         LDX     L00D1
         LDA     L032F
         STA     L00D1
-        JSR     B_PLUS_LD0BF
+        JSR     TODO14
         STX     L00D1
 else
         unknown_machine
