@@ -4824,7 +4824,7 @@ endif
 .LA133
         STA     L00DA
         SEC
-        JSR     TODO16 ; TODO: RENAME ALL B OS ADDRESSES TO B_LXXXX
+        JSR     TODO16
 
 if BBC_B
         LDA     (L00D6),Y
