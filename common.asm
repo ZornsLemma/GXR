@@ -91,6 +91,22 @@ elif ELECTRON
         fillRow = $D5BC ; TODO: ELK ZP DIFFS, BEEB DE IS ELK DC, ELK DD IS BEEB DF
         setScreenAddress = $D77A ; TODO: ELK ZP DIFFS
         selectRom = $E3A0
+
+        ; The Electron has a different arrangement of zero page VDU variables
+        ; compared to the BBC machines:
+        ;
+        ;                                               BBC             Electron
+        ; vduCurrentPlotByteMask                        $D1             $D1
+        ; vduGraphicsColourByteOR                       $D4             $DE
+        ; vduGraphicsColourByteEOR                      $D5             $DF
+        ; vduScreenAddressOfGraphicsCursorCellLow       $D6             $D4
+        ; vduScreenAddressOfGraphicsCursorCellHigh      $D7             $D5
+        ; vduTempStoreDA                                $DA             $D8
+        ; vduTempStoreDB                                $DB             $D9
+        ; vduTempStoreDC                                $DC             $DA
+        ; vduTempStoreDD                                $DD             $DB
+        ; vduTempStoreDE                                $DE             $DC
+        ; vduTempStoreDF                                $DF             $DD
 else
         unknown_machine
 endif
