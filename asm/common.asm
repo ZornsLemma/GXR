@@ -504,12 +504,10 @@ endif
         STA     (L00F8),Y
         JSR     L8A6A
 
-        ; Copy the code at L8955 into our workspace. Although I've tried to
-        ; derive the correct values at assembly time, it's almost certainly
-        ; necessary that the code copied doesn't get any longer as offset $48
-        ; holds an (unrelated) value. We could probably get away with shrinking
-        ; the copied code, but I haven't tried this.
-        assert (L899D - L8955) - 1 == $47
+        ; Copy the code at L8955 into our workspace. Offset $48 is used for
+        ; something else, so this code must not grow beyond the original
+        ; length.
+        assert (L899D - L8955) - 1 <= $47
         LDY     #(L899D - L8955) - 1
 {
 .L80FD
@@ -945,9 +943,9 @@ endif
 
         JSR     osnewl
 
-        LDX     #$6D
-        LDY     #$84
-        JSR     L88C8
+        LDX     #lo(L846D_graphics_help)
+        LDY     #hi(L846D_graphics_help)
+        JSR     L88C8_print_help_yx
 
 .L83D9
         PLA
@@ -965,9 +963,9 @@ endif
 
         JSR     osnewl
 
-        LDX     #$2D
-        LDY     #$88
-        JSR     L88C8
+        LDX     #lo(L882D_sprite_status)
+        LDY     #hi(L882D_sprite_status)
+        JSR     L88C8_print_help_yx
 
         LDY     #$4A
         LDA     (L00F8),Y
@@ -1011,9 +1009,9 @@ endif
 .L845D
         JSR     osnewl
 
-        LDX     #$3E
-        LDY     #$88
-        JSR     L88C8
+        LDX     #lo(L883E_sprite_commands_help)
+        LDY     #hi(L883E_sprite_commands_help)
+        JSR     L88C8_print_help_yx
 
 .L8467
         LDX     L00F4
@@ -1022,6 +1020,7 @@ endif
         PLA
         RTS
 
+.L846D_graphics_help
         EQUS    "  GXR commands",$0D,"GXR",$0D,"NOGXR",$0D,"FLOOD",$0D,"NOFLOOD",$0D,$0D,$08,$08,"Plot codes",$0D,"00 Line",$0D,"08 "
         EQUS    "Line (LPO)",$0D,"10 Dot-dash (R)",$0D,"18 Dot-dash (R,LPO)",$0D,"20 Line (FPO)",$0D,"28 "
         EQUS    "Line (BEO)",$0D,"30 Dot-dash (C,FPO)",$0D,"38 Dot-dash (C,BEO)",$0D,$0D,"40 Point",$0D,"48 "
@@ -1038,13 +1037,15 @@ endif
         EQUS    "ct colour pattern",$0D,"GCOL a,c",$0D,"a<16 solid colour c",$0D,"a=16-21 : pattern"
         EQUS    " 1",$0D,"a=32-37 : pattern 2",$0D,"a=48-53 : pattern 3",$0D,"a=64-69 : pattern 4",$0D,$00
 
+.L882D_sprite_status
         EQUS    "  Sprite status",$0D,$00
 
+.L883E_sprite_commands_help
         EQUS    "  Sprite commands",$0D,"SSPACE n",$0D,"SCHOOSE n",$0D,"SDELETE n",$0D,"SEDIT n",$0D,"SEDIT n,m"
         EQUS    $0D,"SGET n",$0D,"SLOAD filename",$0D,"SMERGE filename",$0D,"SNEW",$0D,"SRENUMBER n,m",$0D,"SSAVE "
         EQUS    "filename",$0D,$00
 
-.L88C8
+.L88C8_print_help_yx
         STX     vduTempStoreDA
         STY     vduTempStoreDB
         LDY     #$00
@@ -1205,9 +1206,6 @@ if BBC_B or BBC_B_PLUS
         STA     LFE30
 elif ELECTRON
         JSR     selectRom
-        ; TODO: We can maybe get rid of these NOPs but play it safe for now.
-        NOP
-        NOP
 else
         unknown_machine
 endif
@@ -1219,9 +1217,6 @@ if BBC_B or BBC_B_PLUS
         STA     LFE30
 elif ELECTRON
         JSR     selectRom
-        ; TODO: We can maybe get rid of these NOPs but play it safe for now.
-        NOP
-        NOP
 else
         unknown_machine
 endif
