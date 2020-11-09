@@ -478,14 +478,14 @@ endif
         BPL     L80FD
 }
 
-        LDY     #(jmp_wrchv_patch - L8955) + 1
+        LDY     #(jmp_old_wrchv_patch - L8955) + 1
         LDA     wrchv + 0
         PHA
         STA     (L00F8),Y
         INY
         LDA     wrchv + 1
         STA     (L00F8),Y
-        LDY     #(jmp_to_patch_2 - L8955) + 2
+        LDY     #(jsr_old_wrchv_patch - L8955) + 2
         STA     (L00F8),Y
         DEY
         PLA
@@ -1105,7 +1105,7 @@ endif
 
 .L8961
         PLA
-.jmp_wrchv_patch
+.jmp_old_wrchv_patch
         JMP     LFFFF ; patched to JMP to original WRCHV
 
 .L8965
@@ -1126,8 +1126,8 @@ endif
         BNE     L8961
 
         PLA
-.jmp_to_patch_2 ; TODO: RENAME, IT'S A JSR (AND THUS NOT #2)
-        JSR     LFFFF
+.jsr_old_wrchv_patch
+        JSR     LFFFF ; patched to JSR to original WRCHV
 
         SEC
         BCS     L8987
