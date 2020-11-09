@@ -38,7 +38,6 @@ elif BBC_B_PLUS
         TODO17 = $D62E
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
-        B_PLUS_LD36A = $D36A
         B_PLUS_LD427 = $D427
 else
         unknow_machine
@@ -4910,13 +4909,7 @@ else
 endif
 .LA181
         SEC
-if BBC_B
         JSR     TODO16
-elif BBC_B_PLUS
-        JSR     B_PLUS_LD36A
-else
-        unknown_machine
-endif
 
         DEX
         BNE     LA17C
