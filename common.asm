@@ -6,6 +6,7 @@ endmacro
 
 xvduv = $0DD8
 vduJumpVector = $035D
+extendedVectorTableVduV = $ff39
 
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
@@ -339,7 +340,7 @@ elif BBC_B_PLUS
 elif ELECTRON
         ; TODO: Copy BBC B for now, ask Electron experts for advice on best option -
         ; I think this is controlling the automatic enable/disable of ROM based on
-        ; which socket it's in.
+        ; which bank it's in.
         AND     #$01
 else
         unknown_machine
@@ -479,9 +480,9 @@ endif
         STA     (L00F8),Y
         JSR     L88F9
 
-        LDA     #$39
+        LDA     #lo(extendedVectorTableVduV)
         STA     L0226
-        LDA     #$FF
+        LDA     #hi(extendedVectorTableVduV)
         STA     L0227
         LDA     #lo(L8CB4)
         STA     xvduv + 0
