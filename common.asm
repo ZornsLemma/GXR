@@ -373,9 +373,9 @@ endif
 
         LDY     #workspace_98
         LDA     (L00F8),Y
-        BPL     L8076 ; branch if workspace not initialised
+        BPL     L8076 ; branch if no saved UDGs
 
-        JSR     L8C80
+        JSR     L8C80_restore_saved_udgs
 
 .L8076
         LDY     L032A
@@ -1420,7 +1420,7 @@ L8B72 = L8B71 + 1
         EQUW    L8BB1, LA258, L8BB1, L8BB1
 
 .L8BB1
-        JSR     L8C80
+        JSR     L8C80_restore_saved_udgs
 
 .L8BB4
         LDA     L031F
@@ -1558,7 +1558,7 @@ L8B72 = L8B71 + 1
         BPL     L8C71
 }
 
-.L8C80
+.L8C80_restore_saved_udgs
         JSR     L8943_set_f8_f9_to_private_workspace
 
         ; Copy workspace offset $99-$FF inclusive to page $C, restoring the
@@ -4577,7 +4577,7 @@ endif
 
         JSR     L9DEB
 
-        JMP     L8C80
+        JMP     L8C80_restore_saved_udgs
 
 .L9F54
         LDA     #$01
@@ -4606,7 +4606,7 @@ endif
 
         JSR     L9E3F
 
-        JMP     L8C80
+        JMP     L8C80_restore_saved_udgs
 
 .L9F7C
         LDY     #$02
