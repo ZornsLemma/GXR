@@ -16,6 +16,7 @@ if BBC_B
         TODO13 = $D864
         TODO14 = $D0F3
         TODO15 = $D14D
+        TODO16 = $D3F2
 elif BBC_B_PLUS
         TODO1 = $C413
         TODO2 = $C41A
@@ -32,6 +33,7 @@ elif BBC_B_PLUS
         TODO13 = $D7ED
         TODO14 = $D0BF
         TODO15 = $D0FE
+        TODO16 = $D36A
         B_PLUS_LD0CD = $D0CD
         B_PLUS_LD0D0 = $D0D0
         B_PLUS_LD36A = $D36A
@@ -4868,13 +4870,11 @@ endif
 .LA133
         STA     L00DA
         SEC
-if BBC_B
-        JSR     LD3F2 ; TODO: RENAME ALL B OS ADDRESSES TO B_LXXXX
+        JSR     TODO16 ; TODO: RENAME ALL B OS ADDRESSES TO B_LXXXX
 
+if BBC_B
         LDA     (L00D6),Y
 elif BBC_B_PLUS
-        JSR     B_PLUS_LD36A
-
         LDX     L00DA
         JSR     B_PLUS_LD427
 
@@ -4936,7 +4936,7 @@ endif
 .LA181
         SEC
 if BBC_B
-        JSR     LD3F2
+        JSR     TODO16
 elif BBC_B_PLUS
         JSR     B_PLUS_LD36A
 else
