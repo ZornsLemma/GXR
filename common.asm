@@ -1117,10 +1117,10 @@ endif
         CMP     #hi(vdu25EntryPoint)
         BNE     L8961
 
-        LDA     #$31 ; SFTODO MAGIC CONSTANT
+        LDA     #our_wrchv_handler_rom - L8955
         STA     vduJumpVector + 0
 .lda_imm_our_wrchv_handler_ram_hi_patch
-        LDA     #$FF
+        LDA     #$FF ; patched to LDA #hi(our_private_workspace)
         STA     vduJumpVector + 1
         BNE     L8961
 
@@ -1136,6 +1136,8 @@ endif
         SEC
         BCS     L8987
 
+; We set WRCHV to point to the RAM copy of our_wrchv_handler_rom
+.our_wrchv_handler_rom
         CLC
 .L8987
         PHA
