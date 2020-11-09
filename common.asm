@@ -62,6 +62,8 @@ elif ELECTRON
         sixteenColourMODEMaskTable = $C3C2
         gcolPlotOptionsTable = $C3D7
         twoColourMODEParameterTable = $C3DF
+        vdu25EntryPoint = $C986
+        vdu22EntryPoint = $C8EC
         exchangeTwoVDUBytes = $CD1A
         plotPointWithinBoundsAtY = $D004 ; TODO: BUT B &D4 SEEMS TO BE &DE ON ELK, BEEB D6 IS ELK D4, BEEB DA IS ELK D8, BEEK D5 IS ELK DF
         checkPointXIsWithinGraphicsWindow = $D020 ; TODO: ELK ZP DIFFS
