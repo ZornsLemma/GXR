@@ -6851,8 +6851,11 @@ LAD50 = LAD4F + 1
         EQUW    LB3B4
         EQUW    LB16D
         EQUW    LB1AF
-        EQUB    $DF,$B4,$BA,$B5,$ED,$B6,$43
-        EQUB    $B7,$FC,$AD,$FC,$AD,$B7,$AD,$F6
+        EQUW    LB4DF
+        EQUW    LB5BA
+        EQUW    LB6ED
+        EQUW    LB743
+        EQUB    $FC,$AD,$FC,$AD,$B7,$AD,$F6
         EQUB    $AE,$55,$AF,$B5,$AF,$DA,$AF,$FC
         EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$FC
         EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$FC
@@ -8028,6 +8031,7 @@ LAD50 = LAD4F + 1
 .LB4DE
         RTS
 
+.LB4DF
         JSR     LB16D
 
         BCS     LB52C
@@ -8188,6 +8192,7 @@ LAD50 = LAD4F + 1
         TAX
         JMP     (L00DA)
 
+.LB5BA
         JSR     LB6C5
 
         STA     L00DC
@@ -8384,6 +8389,7 @@ LAD50 = LAD4F + 1
         LDA     L00DE
         RTS
 
+.LB6ED
         CLC
         LDA     L00AC
         ADC     #$05
@@ -8439,6 +8445,7 @@ LAD50 = LAD4F + 1
 
         JMP     LA94E
 
+.LB743
         CLC
         LDA     L00AC
         STA     L00DC
