@@ -4,6 +4,9 @@ macro unknown_machine
         error "Can't assemble for unknown machine!"
 endmacro
 
+xvduv = $0DD8
+vduJumpVector = $035D
+
 if BBC_B
         ; Labels here are chosen to correspond to the annotated OS disassembly
         ; at https://tobylobster.github.io/mos/index.html.
@@ -179,8 +182,6 @@ if BBC_B_PLUS
 L035A   = $035A
 endif
 L035B   = $035B
-L035D   = $035D
-L035E   = $035E
 L0360   = $0360
 L0361   = $0361
 L0362   = $0362
@@ -256,9 +257,6 @@ L0C4F   = $0C4F
 L0C50   = $0C50
 L0C51   = $0C51
 L0C52   = $0C52
-L0DD8   = $0DD8
-L0DD9   = $0DD9
-L0DDA   = $0DDA
 L0DF0   = $0DF0
 LFE30   = $FE30
 LFFCE   = $FFCE
@@ -474,18 +472,12 @@ endif
         STA     L0226
         LDA     #$FF
         STA     L0227
-if BBC_B
-        LDA     #$B4
-elif BBC_B_PLUS
-        LDA     #$B5
-else
-        unknown_machine
-endif
-        STA     L0DD8
-        LDA     #$8C
-        STA     L0DD9
+        LDA     #lo(L8CB4)
+        STA     xvduv + 0
+        LDA     #hi(L8CB4)
+        STA     xvduv + 1
         LDA     L00F4
-        STA     L0DDA
+        STA     xvduv + 2
         JSR     L8D0E
 
         LDA     #$00
@@ -1030,24 +1022,24 @@ endif
         PLA
         STA     (L00F8),Y
         INY
-        LDA     L0DD8
+        LDA     xvduv + 0
         PHA
         LDA     (L00F8),Y
-        STA     L0DD8
+        STA     xvduv + 0
         PLA
         STA     (L00F8),Y
         INY
-        LDA     L0DD9
+        LDA     xvduv + 1
         PHA
         LDA     (L00F8),Y
-        STA     L0DD9
+        STA     xvduv + 1
         PLA
         STA     (L00F8),Y
         INY
-        LDA     L0DDA
+        LDA     xvduv + 2
         PHA
         LDA     (L00F8),Y
-        STA     L0DDA
+        STA     xvduv + 2
         PLA
         STA     (L00F8),Y
         PLA
@@ -1070,7 +1062,7 @@ endif
 
 .L8955
         PHA
-        LDA     L035D
+        LDA     vduJumpVector + 0
 if BBC_B
         CMP     #$8C
 elif BBC_B_PLUS
@@ -1094,18 +1086,18 @@ endif
         JMP     LFFFF
 
 .L8965
-        LDA     L035E
+        LDA     vduJumpVector + 1
         CMP     #$C9
         BNE     L8961
 
         LDA     #$31
-        STA     L035D
+        STA     vduJumpVector + 0
         LDA     #$FF
-        STA     L035E
+        STA     vduJumpVector + 1
         BNE     L8961
 
 .L8978
-        LDA     L035E
+        LDA     vduJumpVector + 1
 if BBC_B
         CMP     #$C8
 elif BBC_B_PLUS
@@ -1561,6 +1553,7 @@ L8B72 = L8B71 + 1
         LDA     #$1B
         JMP     L8CD2
 
+.L8CB4
         JSR     L8943
 
         BCC     L8CD3
