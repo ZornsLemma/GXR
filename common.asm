@@ -358,13 +358,13 @@ endif
         BNE     L8087
 
 .L805D
-        LDA     #$02
+        LDA     #service_request_private_workspace
         RTS
 
 .L8060_handle_service_request_private_workspace
         STA     L0328
         STY     L032A
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDA     L00F9
         BEQ     L8076
@@ -523,7 +523,7 @@ endif
         PHA
         TYA
         PHA
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDX     #$00
         STX     L00DC
@@ -567,7 +567,7 @@ endif
         BCC     L81B9
 
         STY     L00DD
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$4A
         LDA     (L00F8),Y
@@ -698,7 +698,7 @@ endif
         RTS
 
 .L82B5
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDA     L00F1
         CMP     #$41
@@ -778,7 +778,7 @@ endif
         RTS
 
 .L8324
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         BNE     L8337
 
@@ -809,7 +809,7 @@ endif
         PHA
         TYA
         PHA
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JSR     osnewl
 
@@ -1027,7 +1027,7 @@ endif
 .L88F9
         TYA
         PHA
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$67
         LDA     L0226
@@ -1068,7 +1068,7 @@ endif
         TAY
         RTS
 
-.L8943
+.L8943_set_f8_f9_to_private_workspace
         PHA
         TXA
         PHA
@@ -1444,7 +1444,7 @@ L8B72 = L8B71 + 1
         RTS
 
 .L8BCE
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         BCS     L8BBB
 
@@ -1535,7 +1535,7 @@ L8B72 = L8B71 + 1
         STA     L00DA
         LDA     L8B72,X
         STA     L00DB
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JMP     (L00DA)
 
@@ -1550,7 +1550,7 @@ L8B72 = L8B71 + 1
         BPL     L8C71
 
 .L8C80
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDA     #$99
         STA     L00F8
@@ -1587,7 +1587,7 @@ L8B72 = L8B71 + 1
         JMP     L8CD2
 
 .L8CB4
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         BCC     L8CD3
 
@@ -1887,7 +1887,7 @@ L8B72 = L8B71 + 1
 .L8E49
         ADC     #$6B
         TAY
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDX     #$07
 .L8E51
@@ -4138,7 +4138,7 @@ endif
         RTS
 
 .L9CCB
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$97
         LDX     #$0B
@@ -4152,7 +4152,7 @@ endif
         RTS
 
 .L9CDC
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$97
         LDX     #$02
@@ -5684,7 +5684,7 @@ endif
         LDA     #$00
         JSR     osfile
 
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JSR     LB804
 
@@ -5823,7 +5823,7 @@ endif
         LDA     #$00
         JSR     osfind
 
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         PLA
         STA     L00DD
@@ -5850,7 +5850,7 @@ endif
         LDA     #$FF
         JSR     osfile
 
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$65
         LDA     (L00F8),Y
@@ -5891,7 +5891,7 @@ endif
         TAY
         PLA
         TAX
-        JMP     L8943
+        JMP     L8943_set_f8_f9_to_private_workspace
 
 .LA74E
         JSR     LB851
@@ -6465,7 +6465,7 @@ endif
         RTS
 
 .LAAEA
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDA     L00DC
         PHA
@@ -6505,7 +6505,7 @@ endif
         EQUS    $19,$04,$98,$03,$C8,$00,$19,"g",$C4,$04," ",$03
 
 .LAB2D
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         LDY     #$4C
         LDA     L00AC
@@ -6557,7 +6557,7 @@ endif
         JSR     LAAB6
 
 .LAB8D
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JSR     LB804
 
@@ -6635,7 +6635,7 @@ endif
         LDA     L032A
         LDY     #$05
         STA     (L00AC),Y
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JSR     LB15B
 
@@ -7721,7 +7721,7 @@ LAD50 = LAD4F + 1
         JMP     LA957
 
 .LB2DA
-        JSR     L8943
+        JSR     L8943_set_f8_f9_to_private_workspace
 
         JSR     LB14B
 
@@ -8673,7 +8673,7 @@ LAD50 = LAD4F + 1
 .LB84A
         LDX     L00F8
         LDY     L00F9
-        JMP     L8943
+        JMP     L8943_set_f8_f9_to_private_workspace
 
 .LB851
         JSR     LB835
@@ -8723,7 +8723,7 @@ LAD50 = LAD4F + 1
         LDA     L00DE
         LDX     L00F8
         LDY     L00F9
-        JMP     L8943
+        JMP     L8943_set_f8_f9_to_private_workspace
 
 .LB897
         JSR     generate_error
