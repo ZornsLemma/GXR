@@ -6855,12 +6855,29 @@ LAD50 = LAD4F + 1
         EQUW    LB5BA
         EQUW    LB6ED
         EQUW    LB743
-        EQUB    $FC,$AD,$FC,$AD,$B7,$AD,$F6
-        EQUB    $AE,$55,$AF,$B5,$AF,$DA,$AF,$FC
-        EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$FC
-        EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$FC
-        EQUB    $AD,$FC,$AD,$FC,$AD,$FC,$AD,$08
-        EQUB    $B0,$50,$B0,$B4,$B0,$F3,$B0
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADB7
+        EQUW    LAEF6
+        EQUW    LAF55
+        EQUW    LAFB5
+        EQUW    LAFDA
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LADFC
+        EQUW    LB008
+        EQUW    LB050
+        EQUW    LB0B4
+        EQUW    LB0F3
 
 .LADAF
         LDA     L0348
@@ -6868,6 +6885,7 @@ LAD50 = LAD4F + 1
         LDA     #$00
         BEQ     LADBD
 
+.LADB7
         LDA     L0348
         PHA
         LDA     #$07
@@ -7072,6 +7090,7 @@ LAD50 = LAD4F + 1
 
         RTS
 
+.LAEF6
         JSR     LADC8
 
         LDA     L033E
@@ -7121,6 +7140,7 @@ LAD50 = LAD4F + 1
         LDY     L0340
         JMP     LADFD
 
+.LAF55
         JSR     LADC8
 
         LDA     L033E
@@ -7173,6 +7193,7 @@ LAD50 = LAD4F + 1
         INY
         JMP     LADFD
 
+.LAFB5
         JSR     LADC8
 
         LDA     L033D
@@ -7197,6 +7218,7 @@ LAD50 = LAD4F + 1
         LDY     L0342
         JMP     LAE5A
 
+.LAFDA
         JSR     LADC8
 
         LDA     L033D
@@ -7226,6 +7248,7 @@ LAD50 = LAD4F + 1
         INY
         JMP     LAE5A
 
+.LB008
         JSR     LA957
 
         LDA     #$00
@@ -7271,6 +7294,7 @@ LAD50 = LAD4F + 1
 .LB04D
         JMP     LA957
 
+.LB050
         JSR     LA957
 
         SEC
@@ -7328,6 +7352,7 @@ LAD50 = LAD4F + 1
         LDA     L0363
         BNE     LB04A
 
+.LB0B4
         JSR     LA957
 
         LDA     #$00
@@ -7369,6 +7394,7 @@ LAD50 = LAD4F + 1
 .LB0F0
         JMP     LA957
 
+.LB0F3
         JSR     LA957
 
         SEC
