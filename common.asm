@@ -51,6 +51,12 @@ elif BBC_B_PLUS
         b_plus_sta_d6_indirect_y = $D0CD
         b_plus_modify_d6_indirect_y_by_ora_d4_eor_d5 = $D0D0
         b_plus_lda_d6_indirect_y_eor_35a_sta_da = $D427
+elif ELECTRON
+        sixteenColourMODEMaskTable = $C3C2
+        gcolPlotOptionsTable = $C3D7
+        twoColourMODEParameterTable = $C3DF
+        exchangeTwoVDUBytes = $CD1A
+        plotPointWithinBoundsAtY = $D004 ; TODO: BUT B &D4 SEEMS TO BE &DE ON ELK, BEEB D6 IS ELK D4, BEEB DA IS ELK D8, BEEK D5 IS ELK DF
 else
         unknown_machine
 endif
