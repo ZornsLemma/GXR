@@ -317,24 +317,24 @@ endif
 
 .L8039
         CMP     #service_request_private_workspace
-        BEQ     L8060
+        BEQ     L8060_handle_service_request_private_workspace
 
         CMP     #service_unrecognised_osbyte
         BNE     L8044
 
-        JMP     L82FB
+        JMP     L82FB_handle_service_unrecognised_osbyte
 
 .L8044
         CMP     #service_help
         BNE     L804B
 
-        JMP     L8349
+        JMP     L8349_handle_service_help
 
 .L804B
         CMP     #service_unrecognised_oscli
         BNE     L8052
 
-        JMP     L8167
+        JMP     L8167_handle_service_unrecognised_oscli
 
 .L8052
         RTS
@@ -361,7 +361,7 @@ endif
         LDA     #$02
         RTS
 
-.L8060
+.L8060_handle_service_request_private_workspace
         STA     L0328
         STY     L032A
         JSR     L8943
@@ -519,7 +519,7 @@ endif
         LDA     L0328
         RTS
 
-.L8167
+.L8167_handle_service_unrecognised_oscli
         PHA
         TYA
         PHA
@@ -748,7 +748,7 @@ endif
         LDA     #$07
         RTS
 
-.L82FB
+.L82FB_handle_service_unrecognised_osbyte
         LDA     L00EF
         CMP     #$A3
         BNE     L82F8
@@ -805,7 +805,7 @@ endif
         STA     (L00F8),Y
         RTS
 
-.L8349
+.L8349_handle_service_help
         PHA
         TYA
         PHA
