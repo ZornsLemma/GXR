@@ -745,7 +745,7 @@ endif
         BNE     L82D5
 
 .L82F8
-        LDA     #$07
+        LDA     #service_unrecognised_osbyte
         RTS
 
 .L82FB_handle_service_unrecognised_osbyte
