@@ -292,6 +292,8 @@ if BBC_B
         EQUS    "Graphics Extension ROM 1.20",$0A,$0D,$00
 elif BBC_B_PLUS
         EQUS    "Graphics Extension ROM 2.00",$0A,$0D,$00
+elif ELECTRON
+        EQUS    "Graphics Extension ROM 1.00",$0A,$0D,$00
 else
         unknown_machine
 endif
@@ -330,6 +332,11 @@ if BBC_B
         AND     #$01
 elif BBC_B_PLUS
         AND     #$02
+elif ELECTRON
+        ; TODO: Copy BBC B for now, ask Electron experts for advice on best option -
+        ; I think this is controlling the automatic enable/disable of ROM based on
+        ; which socket it's in.
+        AND     #$01
 else
         unknown_machine
 endif
