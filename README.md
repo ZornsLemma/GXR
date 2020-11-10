@@ -38,6 +38,8 @@ The Electron version is very similar to the BBC B version. The differences are:
 
 * The Electron uses the zero page VDU workspace differently from the BBC B/B+, so the GXR's use of these addresses has to be swapped round to match.
 
+* The Electron has its own method of controlling sideways ROM paging, so that has to be used instead of the BBC B/B+ approach.
+
 * Currently the Electron version uses the same convention as the BBC B for deciding whether to enable the GXR automatically, i.e. it is automatically enabled if (and only if) it's in an odd-numbered ROM bank. I don't know if this is ideal for the Electron, any thoughts on this are welcome!
 
 ## Possible enhancements
