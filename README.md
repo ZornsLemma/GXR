@@ -48,8 +48,10 @@ I don't think this would be too hard but:
 
 * In order to avoid the overhead of going through the extended vector mechanism for OSWRCH, the GXR copies a code stub into the first 71 bytes of its private workspace and points WRCHV at that stub. Since that's in main RAM, no extended vectors need to be used; instead the stub pages in the GXR directly and calls into the ROM. I don't have any timing data to hand, but I know from my experiments when writing [STEM](https://github.com/ZornsLemma/STEM) that this does significantly improve the performance. Bear in mind that every character written to the screen has to be redirected via WRCHV, so a small per-call overhead adds up. However, a sideways RAM version of GXR which doesn't claim any private workspace doesn't have any main RAM belonging to it where this stub can live.
 
-    * It would be possible to change the GXR to use the extended vector mechanism for OSWRCH and just accept the performance hit:
+    * It would be possible to change the GXR to use the extended vector mechanism for OSWRCH and just accept the performance hit.
 
     * It would be possible for the GXR to use 71 bytes elsewhere in main RAM for the stub, e.g. the RS423 output buffer at $0900-$09BF. Of course, doing this opens up the potential for clashes with other code trying to use that space.
+
+    * The GXR could still claim &100 bytes of private workspace but use sideways RAM for the flood fill workspace.
 
 * Ideally care would need to be taken so that allocating memory for sprites still works correctly. What "correctly" means would have to be decided, but sprite support shouldn't be broken. I suspect the best approach would be for sprite workspace to be claimed at PAGE as usual. This probably isn't a big deal, but it would be easy to forget this when hacking together a sideways RAM version.
