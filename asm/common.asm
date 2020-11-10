@@ -1,5 +1,4 @@
 ; Hex labels are based on GXR 1.20 absolute addresses.
-; TODO: I am not sure the "paint" example is working properly, but not 100% sure - the cursor seems to be a funny shape and so forth, but on a model B it seems differently broken anyway
 
 macro unknown_machine
         error "Can't assemble for unknown machine!"
@@ -116,11 +115,12 @@ endif
         ; hold vduWriteCursorScreenAddress{Low,High} on the BBC B/B+. This means
         ; that although the ROM contains code to check if it's installed on an
         ; incompatible machine, in practice an Electron GXR ROM installed on a
-        ; BBC B/B+ will cause glitches in the text output as it scribbles over
-        ; $D8 and $D9. In practice this isn't a huge problem, and it seems best
-        ; not to risk accidentally breaking things by trying to tweak the
-        ; temporary use to avoid accessing $D8 or $D9 until after we've
-        ; successfully checked we *are* running on an Electron.
+        ; BBC B/B+ will cause glitches as it scribbles over $D8 and $D9 and the
+        ; OS writes to random addresses when it thinks it's writing to the
+        ; screen. In practice this isn't a huge problem, and it seems best not
+        ; to risk accidentally breaking things by trying to tweak the temporary
+        ; use to avoid accessing $D8 or $D9 until after we've successfully
+        ; checked we *are* running on an Electron.
 if BBC_B or BBC_B_PLUS
         vduCurrentPlotByteMask = $D1
         vduGraphicsColourByteOR = $D4
