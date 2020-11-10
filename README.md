@@ -4,9 +4,9 @@ A disassembly of the Acornsoft Graphics Extension ROMs for the BBC B and B+ comp
 
 ## Links and credits
 
-The stardot discussion at https://stardot.org.uk/forums/viewtopic.php?f=2&t=20899 inspired me to take a look at this. You can download DFS disc images with the pre-built Electron version of the ROM and sample programs from that thread, if you don't want to build the contents of this repository yourself.
+The stardot discussion at https://stardot.org.uk/forums/viewtopic.php?f=2&t=20899 inspired me to take a look at this. *You can download DFS disc images with the pre-built Electron version of the ROM and sample programs from that thread*, if you don't want to build the contents of this repository yourself.
 
-dv8 has remastered the GXR user guide; it's available at https://stardot.org.uk/forums/viewtopic.php?f=42&t=16838&p=271460. The two disc images of example programs in this repository are taken from this project.
+dv8 has remastered the GXR user guide; it's available at https://stardot.org.uk/forums/viewtopic.php?f=42&t=16838&p=271460. The two disc images of example programs in this repository are taken from that thread.
 
 The initial disassembly was performed using Phill Harvey-Smith's [BeebDis](https://github.com/prime6809/BeebDis). The beebdis directory in the repository contains the control and symbol files I used, although they don't specify all the subroutine tables correctly and the ones in the final disassembly were manually tweaked.
 
@@ -22,7 +22,7 @@ If you're on a Unix-like system and have beebasm on your PATH, running "./make.s
 
 The disassembly has been commented and given human-readable labels as I picked through the code to see why it wasn't working, but it's nowhere near fully annotated. There may be absolute offsets or addresses which I haven't picked up, so if you're going to use the disassembly as the basis for your own project it would be safest to "patch" the ROM by replacing code or data byte-for-byte rather than adding or removing things.
 
-As you'd expect the BBC B (1.20) and B+ (2.00) versions are very nearly identical. The differences are:
+As you'd expect the BBC B (1.20) and B+ (2.00) versions published by Acornsoft are very nearly identical. The differences are:
 
 * Internal graphics routines have moved in the OS ROM and the correct addresses need to be used. The runtime check for the matching OS version has to be altered as well, of course.
 
@@ -30,7 +30,7 @@ As you'd expect the BBC B (1.20) and B+ (2.00) versions are very nearly identica
 
 * In order for the GXR to work correctly in shadow screen modes on the B+, *all* screen reads and writes must be done using code executing at the special hardware-recognised addresses in the OS ROM. This means that where GXR 1.20 sometimes uses its own code to read and write the screen RAM, GXR 2.00 has to call into the OS ROM. In a few places this requires slightly more convoluted code because the OS ROM doesn't happen to contain a subroutine which does exactly what's required.
 
-As the convention seems to be that the GXR version matches the version of the OS it's meant to run on, the Electron port has been given version 1.00. A letter suffix has been added to allow future bugfixed versions of the port to be distinguished.
+As the convention seems to be that the GXR version matches the version of the OS it's meant to run on, the Electron port has been given version 1.00. A letter suffix has been added to allow versions with bug fixes or new features to be distinguished.
 
 The Electron version is very similar to the BBC B version. The differences are:
 
@@ -42,7 +42,7 @@ The Electron version is very similar to the BBC B version. The differences are:
 
 ## Possible enhancements
 
-The GXR raises PAGE by &300 (&100 if the flood fill routines are disabled). Discarding the lengthy help messages in the ROM would easily free up &300 bytes, which opens up the possibility of creating variants (one for each of the BBC B, B+ and Electron) designed to run from sideways RAM which don't raise PAGE.
+The GXR raises PAGE by &300 (&100 if the flood fill routines are disabled). Discarding the lengthy help messages in the ROM would easily free up &300 bytes, which opens up the possibility of creating variants (one for each system) designed to run from sideways RAM which don't raise PAGE.
 
 I don't think this would be too hard but:
 
@@ -52,4 +52,4 @@ I don't think this would be too hard but:
 
     * It would be possible for the GXR to use 71 bytes elsewhere in main RAM for the stub, e.g. the RS423 output buffer at $0900-$09BF. Of course, doing this opens up the potential for clashes with other code trying to use that space.
 
-* Ideally care would need to be taken so that allocating memory for sprites still works correctly. What "correctly" means would have to be decided, but ideally this wouldn't be broken. I suspect the best approach would be for sprite workspace to be claimed at PAGE as usual. This probably isn't a big deal, but it would be easy to forget this when hacking together a sideways RAM version.
+* Ideally care would need to be taken so that allocating memory for sprites still works correctly. What "correctly" means would have to be decided, but sprite support shouldn't be broken. I suspect the best approach would be for sprite workspace to be claimed at PAGE as usual. This probably isn't a big deal, but it would be easy to forget this when hacking together a sideways RAM version.
