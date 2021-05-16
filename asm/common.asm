@@ -1291,12 +1291,10 @@ else
         PHA
         TSX
         LDA &037F
-        ASSERT P% == &89A5
         STA &0103,X
         AND #$7F
         STA &037F
         STA &FE34
-        ASSERT P% == &89B0
         PLA
         TAX
         PLA
@@ -1307,19 +1305,16 @@ else
         TSX
         LDA &0103,X
         STA &037F
-        ASSERT P% == &89C0
         STA &FE34
         LDA &0102,X
         STA &0103,X
         LDA &0101,X
         STA &0102,X
         PLA
-        ASSERT P% == &89D0
         PLA
         TAX
         PLA
         RTS
-        ASSERT P% == &89D4
 .L89D4
 endif
         LDX     L00F4
