@@ -355,7 +355,11 @@ endif
 
 .L8009
 if BBC_B
+    if not(BBC_INTEGRA_B)
         EQUS    "Graphics Extension ROM 1.20",$0A,$0D,$00
+    else
+        EQUS    "Graphics Extension ROM 1.2i",$0A,$0D,$00
+    endif
 elif BBC_B_PLUS
         EQUS    "Graphics Extension ROM 2.00",$0A,$0D,$00
 elif ELECTRON
@@ -715,7 +719,11 @@ endif
         EQUS    "sprites",$00
 
 .L8278
+if not(BBC_INTEGRA_B)
         EQUW    L89C7
+else
+        EQUW    L89D4
+endif
         EQUW    L89F5
         EQUW    L8A0C
         EQUW    L89EC
@@ -1219,7 +1227,11 @@ elif ELECTRON
 else
         unknown_machine
 endif
+if not(BBC_INTEGRA_B)
         JSR     L8BCE_our_vdu_22_25_entry_point
+else
+        JSR     L899D
+endif
 
         PLA
 if BBC_B or BBC_B_PLUS
@@ -1234,10 +1246,9 @@ endif
         RTS
 
 .L899D
+if not(BBC_INTEGRA_B)
         JSR     print_inline_counted
-
         EQUB    not_compatible_end - not_compatible_start
-
 .not_compatible_start
         EQUS    "GXR "
 if BBC_B
@@ -1273,16 +1284,60 @@ else
         unknown_machine
 endif
         BNE     L899D
-
+else
+        PHA
+        PHA
+        TXA
+        PHA
+        TSX
+        LDA &037F
+        ASSERT P% == &89A5
+        STA &0103,X
+        AND #$7F
+        STA &037F
+        STA &FE34
+        ASSERT P% == &89B0
+        PLA
+        TAX
+        PLA
+        JSR L8BCE_our_vdu_22_25_entry_point
+        PHA
+        TXA
+        PHA
+        TSX
+        LDA &0103,X
+        STA &037F
+        ASSERT P% == &89C0
+        STA &FE34
+        LDA &0102,X
+        STA &0103,X
+        LDA &0101,X
+        STA &0102,X
+        PLA
+        ASSERT P% == &89D0
+        PLA
+        TAX
+        PLA
+        RTS
+        ASSERT P% == &89D4
+.L89D4
+endif
         LDX     L00F4
         LDA     #$01
         STA     L0DF0,X
 .L89DA
         JSR     print_inline_counted
-
+if not(BBC_INTEGRA_B)
         EQUB    $0B
-
-        EQUS    "press BREAK"
+        EQUS    "press"
+else
+        EQUB    $0A
+        EQUS    "Hit"
+endif
+        EQUS    " BREAK"
+if BBC_INTEGRA_B
+        EQUS    "."
+endif
 
 .L89E9
         JMP     L89E9
@@ -9813,7 +9868,13 @@ endif
 
 .BeebDisEndAddr
 if BBC_B
+    if not(BBC_INTEGRA_B)
         SAVE "gxr120.rom",BeebDisStartAddr,BeebDisEndAddr
+    else
+        ; The conversion program on the Integra-B support disc chops off the
+        ; last byte of the ROM, so we do the same here.
+        SAVE "gxr12i.rom",BeebDisStartAddr,BeebDisEndAddr-1
+    endif
 elif BBC_B_PLUS
         SAVE "gxr200.rom",BeebDisStartAddr,BeebDisEndAddr
 elif ELECTRON
